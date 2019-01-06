@@ -11,7 +11,7 @@ Camera::Camera(const XMFLOAT3 position, const float fAspectRatio)
 {
 	// Set the initial camera position
 	m_position = position;
-	m_rotation = XMFLOAT3(0, 0, 0);
+	m_rotation = XMFLOAT3(20, 0, 0);
 
 	// Initialize the projection matrix
 	m_mProjection = XMMatrixPerspectiveFovLH( // Build a left-handed perspective projection matrix

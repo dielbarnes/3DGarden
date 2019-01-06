@@ -41,7 +41,7 @@ bool Graphics::Initialize(int& rScreenWidth, int& rScreenHeight, HWND hWindow)
 {
 	// Initialize camera
 	//XMFLOAT3 position = XMFLOAT3(0.0f, 3.7f, -12.0f); // Close up statue
-	XMFLOAT3 position = XMFLOAT3(0.0f, 8.0f, -20.0f);
+	XMFLOAT3 position = XMFLOAT3(0.0f, 8.0f, -22.0f);
 	float aspectRatio = rScreenWidth / (FLOAT)rScreenHeight;
 	m_pCamera = new Camera(position, aspectRatio);
 
@@ -439,6 +439,12 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 	{
 		return false;
 	}
+
+	/*m_pResourceManager->RenderModel(ModelResource::VaseModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::VaseModel)))
+	{
+		return false;
+	}*/
 	
 	m_pResourceManager->RenderModel(ModelResource::PillarModel);
 	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::PillarModel)))
@@ -452,8 +458,8 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 		return false;
 	}
 
-	m_pResourceManager->RenderModel(ModelResource::LupineModel);
-	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::LupineModel)))
+	m_pResourceManager->RenderModel(ModelResource::LavenerModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::LavenerModel)))
 	{
 		return false;
 	}
@@ -477,9 +483,10 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 	// Create an alpha enabled blend state description.
 	D3D11_BLEND_DESC blendStateDescription;
 	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+	blendStateDescription.AlphaToCoverageEnable = TRUE;
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
 	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
@@ -487,6 +494,23 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 	// Create the blend state using the description.
+	if (FAILED(m_pDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState)))
+	{
+		return false;
+	}
+
+	m_pImmediateContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
+
+
+	m_pResourceManager->RenderModel(ModelResource::LupineModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::LupineModel)))
+	{
+		return false;
+	}
+
+
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+
 	if (FAILED(m_pDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState)))
 	{
 		return false;
