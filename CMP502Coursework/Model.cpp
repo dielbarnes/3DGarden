@@ -16,6 +16,10 @@ Model::Model()
 	m_pInstanceBuffer = nullptr;
 	m_iInstanceCount = 0;
 	m_mWorld = XMMatrixIdentity();
+	m_ambientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
+	//m_diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_diffuseColor = XMFLOAT4(1.0f, 0.8f, 0.973f, 1.0f); // Light pink
+	m_lightDirection = XMFLOAT3(0.0f, -0.8f, 0.5f);
 }
 
 Model::~Model()
@@ -148,6 +152,26 @@ XMMATRIX Model::GetWorldMatrix()
 void Model::TransformWorldMatrix(XMMATRIX mTranslation, XMMATRIX mRotation, XMMATRIX mScaling)
 {
 	m_mWorld = m_mWorld * mTranslation * mRotation * mScaling;
+}
+
+XMFLOAT4 Model::GetAmbientColor()
+{
+	return m_ambientColor;
+}
+
+XMFLOAT4 Model::GetDiffuseColor()
+{
+	return m_diffuseColor;
+}
+
+void Model::SetLightDirection(float x, float y, float z)
+{
+	m_lightDirection = XMFLOAT3(x, y, z);
+}
+
+XMFLOAT3 Model::GetLightDirection()
+{
+	return m_lightDirection;
 }
 
 #pragma endregion

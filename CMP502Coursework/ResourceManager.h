@@ -18,7 +18,8 @@ enum TextureResource : int
 	StoneTexture,
 	LupineTexture,
 	LavenderTexture,
-	GroundTexture
+	GroundTexture,
+	WallTexture
 };
 
 enum ModelResource : int
@@ -29,7 +30,9 @@ enum ModelResource : int
 	FountainModel,
 	LupineModel,
 	LavenerModel,
-	GroundModel
+	GroundModel,
+	WallModel,
+	WallModel2
 };
 
 class ResourceManager

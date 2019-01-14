@@ -46,7 +46,7 @@ bool ResourceManager::LoadResources()
 
 	m_models[ModelResource::StatueModel]->SetTexture(*m_textures[TextureResource::StatueTexture]);
 
-	// Stone (pillar & fountain)
+	// Stone (vase, pillar & fountain)
 
 	result = LoadTexture(TextureResource::StoneTexture);
 	if (FAILED(result))
@@ -129,6 +129,33 @@ bool ResourceManager::LoadResources()
 	}
 
 	m_models[ModelResource::GroundModel]->SetTexture(*m_textures[TextureResource::GroundTexture]);
+
+	// Wall
+
+	result = LoadTexture(TextureResource::WallTexture);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to load wall texture.", result);
+		return false;
+	}
+
+	if (!LoadModel(ModelResource::WallModel))
+	{
+		MessageBox(0, "Failed to load wall model.", "", 0);
+		return false;
+	}
+
+	m_models[ModelResource::WallModel]->SetTexture(*m_textures[TextureResource::WallTexture]);
+	m_models[ModelResource::WallModel]->SetLightDirection(-0.5f, -0.8f, 0.5f);
+
+	if (!LoadModel(ModelResource::WallModel2))
+	{
+		MessageBox(0, "Failed to load wall model.", "", 0);
+		return false;
+	}
+
+	m_models[ModelResource::WallModel2]->SetTexture(*m_textures[TextureResource::WallTexture]);
+	m_models[ModelResource::WallModel2]->SetLightDirection(0.5f, -0.8f, 0.5f);
 
 	// Initialize the vertex, index, and instance buffers
 
@@ -238,13 +265,31 @@ bool ResourceManager::LoadResources()
 	result = m_models[ModelResource::GroundModel]->InitializeBuffers(m_pDevice, 1);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to initialize the fountain vertex and index buffers.", result);
+		Utils::ShowError("Failed to initialize the ground vertex and index buffers.", result);
+		return false;
+	}
+
+	int iWallsCount = 2; //3;
+	XMMATRIX mWallScaling = XMMatrixScaling(0.7f, 0.7f, 0.7f);
+	Instance* wallInstances = new Instance[iWallsCount];
+	wallInstances[0].mWorld = XMMatrixTranspose(XMMatrixTranslation(-5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * -0.5f, 0.0f) * mWallScaling);
+	wallInstances[1].mWorld = XMMatrixTranspose(XMMatrixTranslation(0.0f, -15.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, 0.0f, 0.0f) * mWallScaling);
+	//wallInstances[2].mWorld = XMMatrixTranspose(XMMatrixTranslation(5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * 0.5f, 0.0f) * mWallScaling);
+	result = m_models[ModelResource::WallModel]->InitializeBuffers(m_pDevice, iWallsCount, wallInstances);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to initialize the wall vertex and index buffers.", result);
+		return false;
+	}
+
+	result = m_models[ModelResource::WallModel2]->InitializeBuffers(m_pDevice, 1);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to initialize the wall vertex and index buffers.", result);
 		return false;
 	}
 
 	// Transform models
-
-	//XMMATRIX mRotation = XMMatrixRotationRollPitchYaw(XM_PI * 0.5f, XM_PI * 0.5f, XM_PI * 0.5f);
 
 	/*XMMATRIX mVaseTranslation = XMMatrixTranslation(-5.0f, 0.0f, 0.0f);
 	XMMATRIX mVaseScaling = XMMatrixScaling(0.75f, 0.75f, 0.75f);
@@ -257,6 +302,10 @@ bool ResourceManager::LoadResources()
 	XMMATRIX mGroundTranslation = XMMatrixTranslation(0.0f, 0.0f, -5.0f);
 	XMMATRIX mGroundScaling = XMMatrixScaling(0.7f, 0.7f, 0.7f);
 	m_models[ModelResource::GroundModel]->TransformWorldMatrix(mGroundTranslation, XMMatrixIdentity(), mGroundScaling);
+
+	XMMATRIX mWallTranslation = XMMatrixTranslation(5.0f, -20.0f, 20.0f);
+	XMMATRIX mWallRotation = XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * 0.5f, 0.0f);
+	m_models[ModelResource::WallModel2]->TransformWorldMatrix(mWallTranslation, mWallRotation, mWallScaling);
 
 	return true;
 }
@@ -283,6 +332,9 @@ HRESULT ResourceManager::LoadTexture(TextureResource resource)
 		break;
 	case GroundTexture:
 		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/grass.dds", nullptr, &texture, 0, nullptr);
+		break;
+	case WallTexture:
+		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/hedge.dds", nullptr, &texture, 0, nullptr);
 		break;
 	}
 	if (FAILED(result))
@@ -327,7 +379,9 @@ bool ResourceManager::LoadModel(ModelResource resource)
 		file.open("Resources/lavender.txt");
 		break;
 	case GroundModel:
-		file.open("Resources/ground.txt");
+	case WallModel:
+	case WallModel2:
+		file.open("Resources/plane.txt");
 		break;
 	}
 	if (file.fail())

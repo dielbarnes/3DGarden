@@ -282,11 +282,9 @@ bool ShaderManager::Render(Camera* pCamera, Model* pModel)
 	LightBuffer* lightBufferData = (LightBuffer*)mappedResource.pData;
 
 	// Copy the lighting variables into the light buffer
-	lightBufferData->ambientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
-	//lightBufferData->diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	lightBufferData->diffuseColor = XMFLOAT4(1.0f, 0.8f, 0.973f, 1.0f); // Light pink
-	lightBufferData->direction = XMFLOAT3(0.0f, -0.8f, 0.5f);
-	//lightBufferData->direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	lightBufferData->ambientColor = pModel->GetAmbientColor();
+	lightBufferData->diffuseColor = pModel->GetDiffuseColor();
+	lightBufferData->direction = pModel->GetLightDirection();
 	lightBufferData->padding = 0.0f;
 
 	// Unlock the light buffer

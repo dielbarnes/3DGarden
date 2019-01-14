@@ -49,6 +49,10 @@ public:
 	void SetModelData(ModelData* modelData);
 	XMMATRIX GetWorldMatrix();
 	void TransformWorldMatrix(XMMATRIX mScaling, XMMATRIX mRotation, XMMATRIX mTranslation);
+	XMFLOAT4 GetAmbientColor();
+	XMFLOAT4 GetDiffuseColor();
+	void SetLightDirection(float x, float y, float z);
+	XMFLOAT3 GetLightDirection();
 
 private:
 	ID3D11ShaderResourceView* m_pTexture;
@@ -60,6 +64,9 @@ private:
 	int m_iInstanceCount;
 	ModelData* m_modelData;
 	XMMATRIX m_mWorld;
+	XMFLOAT4 m_ambientColor;
+	XMFLOAT4 m_diffuseColor;
+	XMFLOAT3 m_lightDirection;
 };
 
 #endif

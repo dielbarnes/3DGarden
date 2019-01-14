@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -243,12 +243,17 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\fountain.txt" />
+    <Text Include="Resources\ground.txt" />
+    <Text Include="Resources\lavender.txt" />
     <Text Include="Resources\lupine.txt" />
     <Text Include="Resources\pillar.txt" />
     <Text Include="Resources\statue.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\grass.dds" />
+    <Image Include="Resources\lavender.dds" />
     <Image Include="Resources\lupine.dds" />
+    <Image Include="Resources\particle.dds" />
     <Image Include="Resources\statue_d.dds" />
     <Image Include="Resources\stone.dds" />
   </ItemGroup>

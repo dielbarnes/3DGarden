@@ -470,6 +470,18 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 		return false;
 	}
 
+	m_pResourceManager->RenderModel(ModelResource::WallModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::WallModel)))
+	{
+		return false;
+	}
+
+	m_pResourceManager->RenderModel(ModelResource::WallModel2);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::WallModel2)))
+	{
+		return false;
+	}
+
 
 
 
