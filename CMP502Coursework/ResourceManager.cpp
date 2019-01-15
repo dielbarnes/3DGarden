@@ -105,13 +105,13 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	if (!LoadModel(ModelResource::LavenerModel))
+	if (!LoadModel(ModelResource::LavenderModel))
 	{
 		MessageBox(0, "Failed to load lavender model.", "", 0);
 		return false;
 	}
 
-	m_models[ModelResource::LavenerModel]->SetTexture(*m_textures[TextureResource::LavenderTexture]);
+	m_models[ModelResource::LavenderModel]->SetTexture(*m_textures[TextureResource::LavenderTexture]);
 
 	// Ground
 
@@ -130,32 +130,48 @@ bool ResourceManager::LoadResources()
 
 	m_models[ModelResource::GroundModel]->SetTexture(*m_textures[TextureResource::GroundTexture]);
 
-	// Wall
+	// Hedge
 
-	result = LoadTexture(TextureResource::WallTexture);
+	result = LoadTexture(TextureResource::HedgeTexture);
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to load wall texture.", result);
 		return false;
 	}
 
-	if (!LoadModel(ModelResource::WallModel))
+	if (!LoadModel(ModelResource::HedgeModel))
 	{
 		MessageBox(0, "Failed to load wall model.", "", 0);
 		return false;
 	}
 
-	m_models[ModelResource::WallModel]->SetTexture(*m_textures[TextureResource::WallTexture]);
-	m_models[ModelResource::WallModel]->SetLightDirection(-0.5f, -0.8f, 0.5f);
+	m_models[ModelResource::HedgeModel]->SetTexture(*m_textures[TextureResource::HedgeTexture]);
+	m_models[ModelResource::HedgeModel]->SetLightDirection(-0.5f, -0.8f, 0.5f);
 
-	if (!LoadModel(ModelResource::WallModel2))
+	Model *hedgeModel2 = new Model();
+	*hedgeModel2 = *m_models[ModelResource::HedgeModel];
+	m_models.push_back(hedgeModel2);
+
+	m_models[ModelResource::HedgeModel2]->SetTexture(*m_textures[TextureResource::HedgeTexture]);
+	m_models[ModelResource::HedgeModel2]->SetLightDirection(0.5f, -0.8f, 0.5f);
+
+	// Balustrade
+
+	if (!LoadModel(ModelResource::BalustradeModel))
 	{
-		MessageBox(0, "Failed to load wall model.", "", 0);
+		MessageBox(0, "Failed to load balustrade model.", "", 0);
 		return false;
 	}
 
-	m_models[ModelResource::WallModel2]->SetTexture(*m_textures[TextureResource::WallTexture]);
-	m_models[ModelResource::WallModel2]->SetLightDirection(0.5f, -0.8f, 0.5f);
+	m_models[ModelResource::BalustradeModel]->SetTexture(*m_textures[TextureResource::StoneTexture]);
+	m_models[ModelResource::BalustradeModel]->SetLightDirection(-0.3f, -0.8f, 0.5f);
+
+	Model *balustradeModel2 = new Model();
+	*balustradeModel2 = *m_models[ModelResource::BalustradeModel];
+	m_models.push_back(balustradeModel2);
+
+	m_models[ModelResource::BalustradeModel2]->SetTexture(*m_textures[TextureResource::StoneTexture]);
+	m_models[ModelResource::BalustradeModel2]->SetLightDirection(0.3f, -0.8f, 0.5f);
 
 	// Initialize the vertex, index, and instance buffers
 
@@ -255,7 +271,7 @@ bool ResourceManager::LoadResources()
 	lavenderInstances[24].mWorld = XMMatrixTranspose(XMMatrixTranslation(1850.0f, -250.0f, -1650.0f) * mLavenderScaling);
 	lavenderInstances[25].mWorld = XMMatrixTranspose(XMMatrixTranslation(1950.0f, -250.0f, -1550.0f) * mLavenderScaling);
 	lavenderInstances[26].mWorld = XMMatrixTranspose(XMMatrixTranslation(2050.0f, -250.0f, -1550.0f) * mLavenderScaling);
-	result = m_models[ModelResource::LavenerModel]->InitializeBuffers(m_pDevice, iLavenderCount, lavenderInstances);
+	result = m_models[ModelResource::LavenderModel]->InitializeBuffers(m_pDevice, iLavenderCount, lavenderInstances);
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to initialize the lavender vertex and index buffers.", result);
@@ -269,23 +285,51 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	int iWallsCount = 2; //3;
-	XMMATRIX mWallScaling = XMMatrixScaling(0.7f, 0.7f, 0.7f);
-	Instance* wallInstances = new Instance[iWallsCount];
-	wallInstances[0].mWorld = XMMatrixTranspose(XMMatrixTranslation(-5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * -0.5f, 0.0f) * mWallScaling);
-	wallInstances[1].mWorld = XMMatrixTranspose(XMMatrixTranslation(0.0f, -15.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, 0.0f, 0.0f) * mWallScaling);
-	//wallInstances[2].mWorld = XMMatrixTranspose(XMMatrixTranslation(5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * 0.5f, 0.0f) * mWallScaling);
-	result = m_models[ModelResource::WallModel]->InitializeBuffers(m_pDevice, iWallsCount, wallInstances);
+	int iHedgesCount = 2; //3;
+	XMMATRIX mHedgeScaling = XMMatrixScaling(0.7f, 0.7f, 0.7f);
+	Instance* hedgeInstances = new Instance[iHedgesCount];
+	hedgeInstances[0].mWorld = XMMatrixTranspose(XMMatrixTranslation(-5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * -0.5f, 0.0f) * mHedgeScaling);
+	hedgeInstances[1].mWorld = XMMatrixTranspose(XMMatrixTranslation(0.0f, -15.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, 0.0f, 0.0f) * mHedgeScaling);
+	//hedgeInstances[2].mWorld = XMMatrixTranspose(XMMatrixTranslation(5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * 0.5f, 0.0f) * mHedgeScaling);
+	result = m_models[ModelResource::HedgeModel]->InitializeBuffers(m_pDevice, iHedgesCount, hedgeInstances);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to initialize the wall vertex and index buffers.", result);
+		Utils::ShowError("Failed to initialize the hedge vertex and index buffers.", result);
 		return false;
 	}
 
-	result = m_models[ModelResource::WallModel2]->InitializeBuffers(m_pDevice, 1);
+	result = m_models[ModelResource::HedgeModel2]->InitializeBuffers(m_pDevice, 1);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to initialize the wall vertex and index buffers.", result);
+		Utils::ShowError("Failed to initialize the hedge vertex and index buffers.", result);
+		return false;
+	}
+
+	int iBalustradesCount = 6;
+	XMMATRIX mBalustradeScaling = XMMatrixScaling(11.0f, 11.0f, 11.0f);
+	Instance* balustradeInstances = new Instance[iBalustradesCount];
+	balustradeInstances[0].mWorld = XMMatrixTranspose(XMMatrixTranslation(-0.84f, -0.125f, 0.95f) * mBalustradeScaling);
+	balustradeInstances[1].mWorld = XMMatrixTranspose(XMMatrixTranslation(-0.03f, -0.125f, 0.95f) * mBalustradeScaling);
+	balustradeInstances[2].mWorld = XMMatrixTranspose(XMMatrixTranslation(0.78f, -0.125f, 0.95f) * mBalustradeScaling);
+	balustradeInstances[3].mWorld = XMMatrixTranspose(XMMatrixTranslation(0.45f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * -0.5f, 0.0f) * mBalustradeScaling);
+	balustradeInstances[4].mWorld = XMMatrixTranspose(XMMatrixTranslation(-0.36f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * -0.5f, 0.0f) * mBalustradeScaling);
+	balustradeInstances[5].mWorld = XMMatrixTranspose(XMMatrixTranslation(-1.17f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * -0.5f, 0.0f) * mBalustradeScaling);
+	result = m_models[ModelResource::BalustradeModel]->InitializeBuffers(m_pDevice, iBalustradesCount, balustradeInstances);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to initialize the balustrade vertex and index buffers.", result);
+		return false;
+	}
+
+	int iBalustradesCount2 = 3;
+	Instance* balustradeInstances2 = new Instance[iBalustradesCount2];
+	balustradeInstances2[0].mWorld = XMMatrixTranspose(XMMatrixTranslation(-0.5f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * 0.5f, 0.0f) * mBalustradeScaling);
+	balustradeInstances2[1].mWorld = XMMatrixTranspose(XMMatrixTranslation(0.31f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * 0.5f, 0.0f) * mBalustradeScaling);
+	balustradeInstances2[2].mWorld = XMMatrixTranspose(XMMatrixTranslation(1.12f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * 0.5f, 0.0f) * mBalustradeScaling);
+	result = m_models[ModelResource::BalustradeModel2]->InitializeBuffers(m_pDevice, iBalustradesCount2, balustradeInstances2);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to initialize the balustrade vertex and index buffers.", result);
 		return false;
 	}
 
@@ -303,9 +347,9 @@ bool ResourceManager::LoadResources()
 	XMMATRIX mGroundScaling = XMMatrixScaling(0.7f, 0.7f, 0.7f);
 	m_models[ModelResource::GroundModel]->TransformWorldMatrix(mGroundTranslation, XMMatrixIdentity(), mGroundScaling);
 
-	XMMATRIX mWallTranslation = XMMatrixTranslation(5.0f, -20.0f, 20.0f);
-	XMMATRIX mWallRotation = XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * 0.5f, 0.0f);
-	m_models[ModelResource::WallModel2]->TransformWorldMatrix(mWallTranslation, mWallRotation, mWallScaling);
+	XMMATRIX mHedgeTranslation = XMMatrixTranslation(5.0f, -20.0f, 20.0f);
+	XMMATRIX mHedgeRotation = XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * 0.5f, 0.0f);
+	m_models[ModelResource::HedgeModel2]->TransformWorldMatrix(mHedgeTranslation, mHedgeRotation, mHedgeScaling);
 
 	return true;
 }
@@ -333,7 +377,7 @@ HRESULT ResourceManager::LoadTexture(TextureResource resource)
 	case GroundTexture:
 		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/grass.dds", nullptr, &texture, 0, nullptr);
 		break;
-	case WallTexture:
+	case HedgeTexture:
 		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/hedge.dds", nullptr, &texture, 0, nullptr);
 		break;
 	}
@@ -375,13 +419,15 @@ bool ResourceManager::LoadModel(ModelResource resource)
 	case LupineModel:
 		file.open("Resources/lupine.txt");
 		break;
-	case LavenerModel:
+	case LavenderModel:
 		file.open("Resources/lavender.txt");
 		break;
 	case GroundModel:
-	case WallModel:
-	case WallModel2:
+	case HedgeModel:
 		file.open("Resources/plane.txt");
+		break;
+	case BalustradeModel:
+		file.open("Resources/balustrade.txt");
 		break;
 	}
 	if (file.fail())

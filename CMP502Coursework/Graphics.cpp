@@ -458,8 +458,8 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 		return false;
 	}
 
-	m_pResourceManager->RenderModel(ModelResource::LavenerModel);
-	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::LavenerModel)))
+	m_pResourceManager->RenderModel(ModelResource::LavenderModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::LavenderModel)))
 	{
 		return false;
 	}
@@ -470,14 +470,26 @@ bool Graphics::Render(const float& rDeltaT, float frameTime)
 		return false;
 	}
 
-	m_pResourceManager->RenderModel(ModelResource::WallModel);
-	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::WallModel)))
+	m_pResourceManager->RenderModel(ModelResource::HedgeModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::HedgeModel)))
 	{
 		return false;
 	}
 
-	m_pResourceManager->RenderModel(ModelResource::WallModel2);
-	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::WallModel2)))
+	m_pResourceManager->RenderModel(ModelResource::HedgeModel2);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::HedgeModel2)))
+	{
+		return false;
+	}
+
+	m_pResourceManager->RenderModel(ModelResource::BalustradeModel);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::BalustradeModel)))
+	{
+		return false;
+	}
+
+	m_pResourceManager->RenderModel(ModelResource::BalustradeModel2);
+	if (!m_pShaderManager->Render(m_pCamera, m_pResourceManager->GetModel(ModelResource::BalustradeModel2)))
 	{
 		return false;
 	}
