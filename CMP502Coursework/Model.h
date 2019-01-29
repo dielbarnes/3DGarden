@@ -21,7 +21,7 @@ struct Vertex
 
 struct Instance
 {
-	XMMATRIX mWorld;
+	XMMATRIX worldMatrix;
 };
 
 struct ModelData
@@ -48,7 +48,7 @@ public:
 	int GetInstanceCount();
 	void SetModelData(ModelData* modelData);
 	XMMATRIX GetWorldMatrix();
-	void TransformWorldMatrix(XMMATRIX mScaling, XMMATRIX mRotation, XMMATRIX mTranslation);
+	void TransformWorldMatrix(XMMATRIX scalingMatrix, XMMATRIX rotationMatrix, XMMATRIX translationMatrix);
 	XMFLOAT4 GetAmbientColor();
 	XMFLOAT4 GetDiffuseColor();
 	void SetLightDirection(float x, float y, float z);
@@ -63,7 +63,7 @@ private:
 	ID3D11Buffer* m_pInstanceBuffer;
 	int m_iInstanceCount;
 	ModelData* m_modelData;
-	XMMATRIX m_mWorld;
+	XMMATRIX m_worldMatrix;
 	XMFLOAT4 m_ambientColor;
 	XMFLOAT4 m_diffuseColor;
 	XMFLOAT3 m_lightDirection;

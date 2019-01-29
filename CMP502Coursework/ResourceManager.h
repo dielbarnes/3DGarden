@@ -15,16 +15,19 @@
 enum TextureResource : int
 {
 	StatueTexture = 0,
+	//LionTexture,
 	StoneTexture,
 	LupineTexture,
 	LavenderTexture,
 	GroundTexture,
-	HedgeTexture
+	HedgeTexture,
+	ParticleTexture
 };
 
 enum ModelResource : int
 {
 	StatueModel = 0,
+	//LionModel,
 	//VaseModel,
 	PillarModel,
 	FountainModel,

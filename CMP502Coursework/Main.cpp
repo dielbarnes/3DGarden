@@ -3,7 +3,7 @@
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
 
-#include "System.h"
+#include "App.h"
 
 // Entry point
 int WINAPI WinMain(
@@ -12,13 +12,13 @@ int WINAPI WinMain(
 				PSTR pCmdLine,				// Address of command line string for the application
 				int iCmdShow)				// Controls how the window is to be shown
 {
-	System* pSystem = new System(hInstance);
-	if (pSystem->Initialize())
+	App* pApp = new App(hInstance);
+	if (pApp->Initialize())
 	{
-		pSystem->Run();
+		pApp->Run();
 	}
 
-	SAFE_DELETE(pSystem);
+	SAFE_DELETE(pApp);
 
 	return 0;
 }

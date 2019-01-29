@@ -14,7 +14,7 @@ Camera::Camera(const XMFLOAT3 position, const float fAspectRatio)
 	m_rotation = XMFLOAT3(20, 0, 0);
 
 	// Initialize the projection matrix
-	m_mProjection = XMMatrixPerspectiveFovLH( // Build a left-handed perspective projection matrix
+	m_projectionMatrix = XMMatrixPerspectiveFovLH( // Build a left-handed perspective projection matrix
 						//XM_PIDIV4,		// Pi/4 (45 degrees) field of view angle Y (90 degrees is top-down view)
 						XM_PI/2.5,		
 						fAspectRatio,	// Aspect ratio of view-space X:Y
@@ -30,19 +30,14 @@ Camera::~Camera()
 
 #pragma region Getters
 
-XMFLOAT3 Camera::GetPosition()
-{
-	return m_position;
-}
-
 XMMATRIX Camera::GetViewMatrix()
 {
-	return m_mView;
+	return m_viewMatrix;
 }
 
 XMMATRIX Camera::GetProjectionMatrix()
 {
-	return m_mProjection;
+	return m_projectionMatrix;
 }
 
 #pragma endregion
@@ -51,13 +46,13 @@ XMMATRIX Camera::GetProjectionMatrix()
 
 void Camera::MoveForward(const float& fT, const float& fValue)
 {
-	XMVECTOR temp = XMLoadFloat3(&m_position) + XMMatrixInverse(nullptr, m_mView).r[2] * fT * fValue;
+	XMVECTOR temp = XMLoadFloat3(&m_position) + XMMatrixInverse(nullptr, m_viewMatrix).r[2] * fT * fValue;
 	XMStoreFloat3(&m_position, temp);
 }
 
 void Camera::Strafe(const float& fT, const float& fValue)
 {
-	XMVECTOR temp = XMLoadFloat3(&m_position) + XMMatrixInverse(nullptr, m_mView).r[0] * fT * fValue;
+	XMVECTOR temp = XMLoadFloat3(&m_position) + XMMatrixInverse(nullptr, m_viewMatrix).r[0] * fT * fValue;
 	XMStoreFloat3(&m_position, temp);
 }
 
@@ -82,16 +77,16 @@ void Camera::Update()
 	float pitch = m_rotation.x * XM_PI/180; // X axis
 	float yaw = m_rotation.y * XM_PI/180; // Y axis
 	float roll = m_rotation.z * XM_PI/180; // Z axis
-	XMMATRIX mRotation = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
-	vLook = XMVector3TransformCoord(vLook, mRotation);
-	vUp = XMVector3TransformCoord(vUp, mRotation);
+	vLook = XMVector3TransformCoord(vLook, rotationMatrix);
+	vUp = XMVector3TransformCoord(vUp, rotationMatrix);
 
 	// Apply translation
 	vLook = XMVectorAdd(vPosition, vLook);
 
 	// Build view matrix for a left-handed coordinate system
-	m_mView = XMMatrixLookAtLH(vPosition, vLook, vUp);
+	m_viewMatrix = XMMatrixLookAtLH(vPosition, vLook, vUp);
 }
 
 #pragma endregion

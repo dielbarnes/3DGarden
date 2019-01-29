@@ -15,10 +15,11 @@ Model::Model()
 	m_iIndexCount = 0;
 	m_pInstanceBuffer = nullptr;
 	m_iInstanceCount = 0;
-	m_mWorld = XMMatrixIdentity();
-	m_ambientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
-	//m_diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_diffuseColor = XMFLOAT4(1.0f, 0.8f, 0.973f, 1.0f); // Light pink
+	m_worldMatrix = XMMatrixIdentity();
+	//m_ambientColor = COLOR_XMF4(38.0f, 38.0f, 38.0f, 1.0f);
+	m_ambientColor = COLOR_XMF4(64.0f, 64.0f, 64.0f, 1.0f);
+	//m_diffuseColor = COLOR_XMF4(255.0f, 255.0f, 255.0f, 1.0f);
+	m_diffuseColor = COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f); // Light pink
 	m_lightDirection = XMFLOAT3(0.0f, -0.8f, 0.5f);
 }
 
@@ -27,7 +28,6 @@ Model::~Model()
 	SAFE_RELEASE(m_pVertexBuffer);
 	SAFE_RELEASE(m_pIndexBuffer);
 	SAFE_RELEASE(m_pInstanceBuffer);
-	SAFE_DELETE_ARRAY(m_modelData);
 }
 
 bool Model::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances)
@@ -146,12 +146,12 @@ void Model::SetModelData(ModelData* modelData)
 
 XMMATRIX Model::GetWorldMatrix()
 {
-	return m_mWorld;
+	return m_worldMatrix;
 }
 
-void Model::TransformWorldMatrix(XMMATRIX mTranslation, XMMATRIX mRotation, XMMATRIX mScaling)
+void Model::TransformWorldMatrix(XMMATRIX translationMatrix, XMMATRIX rotationMatrix, XMMATRIX scalingMatrix)
 {
-	m_mWorld = m_mWorld * mTranslation * mRotation * mScaling;
+	m_worldMatrix = m_worldMatrix * translationMatrix * rotationMatrix * scalingMatrix;
 }
 
 XMFLOAT4 Model::GetAmbientColor()

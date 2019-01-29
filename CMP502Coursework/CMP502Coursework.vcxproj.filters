@@ -21,12 +21,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="System.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,14 +48,20 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="System.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +87,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -120,6 +132,15 @@
     <Text Include="Resources\pillar.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="Resources\balustrade.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Resources\plane.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Resources\lavender.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\statue_d.dds">
@@ -129,6 +150,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\stone.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\hedge.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\grass.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\lavender.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\particle.dds">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

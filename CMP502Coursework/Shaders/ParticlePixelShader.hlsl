@@ -1,5 +1,12 @@
+//
+// ParticlePixelShader.hlsl
+// Copyright © 2018 Diel Barnes. All rights reserved.
+//
+
 Texture2D shaderTexture;
 SamplerState samplerState;
+
+// Input
 
 struct PS_INPUT
 {
@@ -8,11 +15,13 @@ struct PS_INPUT
 	float4 color : COLOR;
 };
 
+// Entry point
+
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-	// Sample the pixel color from the texture using the sampler at this texture coordinate location
+	// Sample the pixel color from the texture using the sampler at this texture coordinate
 	float4 textureColor = shaderTexture.Sample(samplerState, input.texCoord);
 
-	// Combine the texture color and the particle color to get the final color result
+	// Multiply the texture color and the particle color to get the final pixel color
 	return textureColor * input.color;
 }

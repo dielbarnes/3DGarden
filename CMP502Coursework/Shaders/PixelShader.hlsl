@@ -48,7 +48,7 @@ float4 PS(PS_INPUT input) : SV_TARGET
 	// Saturate the final light color
 	color = saturate(color);
 
-	// Multiply the texture pixel and the final diffuse color to get the final pixel color
+	// Multiply the texture color and the final diffuse color to get the final pixel color
 	color = color * textureColor;
 
 	return color;
