@@ -39,8 +39,8 @@ GraphicsEngine::~GraphicsEngine()
 	SAFE_DELETE(m_pResourceManager)
 	SAFE_DELETE(m_pShaderManager)
 	SAFE_DELETE(m_pParticleSystem)
-	SAFE_DELETE(m_pAlphaEnabledBlendState)
-	SAFE_DELETE(m_pAlphaDisabledBlendState)
+	SAFE_RELEASE(m_pAlphaEnabledBlendState)
+	SAFE_RELEASE(m_pAlphaDisabledBlendState)
 }
 
 bool GraphicsEngine::Initialize(int& iScreenWidth, int& iScreenHeight, HWND hWindow)
