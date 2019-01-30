@@ -17,7 +17,7 @@ struct LightBuffer // For pixel shader
 	float padding;
 };
 
-class LightShader : Shader
+class LightShader : public Shader
 {
 public:
 	LightShader(ID3D11Device &device, ID3D11DeviceContext &immediateContext);

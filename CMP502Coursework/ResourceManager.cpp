@@ -23,6 +23,7 @@ ResourceManager::~ResourceManager()
 	{
 		SAFE_DELETE(model);
 	}
+	SAFE_DELETE(m_skyDome);
 }
 
 bool ResourceManager::LoadResources()
@@ -199,6 +200,17 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
+	// Sky Dome (not in models array)
+
+	if (!LoadModel(ModelResource::SkyDomeModel))
+	{
+		MessageBox(0, "Failed to load sky dome model.", "", 0);
+		return false;
+	}
+
+	m_skyDome->SetApexColor(COLOR_XMF4(255.0f, 0.0f, 0.0f, 1.0f));
+	m_skyDome->SetCenterColor(COLOR_XMF4(0.0f, 255.0f, 0.0f, 1.0f));
+
 	// Initialize the vertex, index, and instance buffers
 
 	result = m_models[ModelResource::StatueModel]->InitializeBuffers(m_pDevice, 1);
@@ -365,6 +377,13 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
+	result = m_skyDome->InitializeBuffers(m_pDevice, 1);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to initialize the sky dome vertex and index buffers.", result);
+		return false;
+	}
+
 	// Transform models
 
 	/*XMMATRIX vaseTranslationMatrix = XMMatrixTranslation(-5.0f, 0.0f, 0.0f);
@@ -433,7 +452,15 @@ HRESULT ResourceManager::LoadTexture(TextureResource resource)
 bool ResourceManager::LoadModel(ModelResource resource)
 {
 	// Create model
-	Model *model = new Model();
+	Model* model = nullptr;
+	if (resource == SkyDomeModel)
+	{
+		m_skyDome = new SkyDome();
+	}
+	else
+	{
+		model = new Model();
+	}
 	
 	// Open file
 
@@ -470,6 +497,9 @@ bool ResourceManager::LoadModel(ModelResource resource)
 	case BalustradeModel:
 		file.open("Resources/balustrade.txt");
 		break;
+	case SkyDomeModel:
+		file.open("Resources/skydome.txt");
+		break;
 	}
 	if (file.fail())
 	{
@@ -486,8 +516,16 @@ bool ResourceManager::LoadModel(ModelResource resource)
 	// Read the vertex count
 	int iVertexCount;
 	file >> iVertexCount;
-	model->SetVertexCount(iVertexCount);
-	model->SetIndexCount(iVertexCount);
+	if (resource == SkyDomeModel)
+	{
+		m_skyDome->SetVertexCount(iVertexCount);
+		m_skyDome->SetIndexCount(iVertexCount);
+	}
+	else
+	{
+		model->SetVertexCount(iVertexCount);
+		model->SetIndexCount(iVertexCount);
+	}
 
 	// Read up to the beginning of the data
 	file.get(input);
@@ -506,13 +544,23 @@ bool ResourceManager::LoadModel(ModelResource resource)
 		file >> modelData[i].tu >> modelData[i].tv;
 		file >> modelData[i].nx >> modelData[i].ny >> modelData[i].nz;
 	}
-	model->SetModelData(modelData);
+	if (resource == SkyDomeModel)
+	{
+		m_skyDome->SetModelData(modelData);
+	}
+	else
+	{
+		model->SetModelData(modelData);
+	}
 
 	// Close file
 	file.close();
 
-	// Store model in array
-	m_models.push_back(model);
+	if (resource != SkyDomeModel)
+	{
+		// Store model in array
+		m_models.push_back(model);
+	}
 
 	return true;
 }
@@ -528,7 +576,14 @@ ID3D11ShaderResourceView* ResourceManager::GetTexture(TextureResource resource)
 
 Model* ResourceManager::GetModel(ModelResource resource)
 {
-	return m_models[resource];
+	if (resource == SkyDomeModel)
+	{
+		return m_skyDome;
+	}
+	else
+	{
+		return m_models[resource];
+	}
 }
 
 #pragma endregion
@@ -537,7 +592,14 @@ Model* ResourceManager::GetModel(ModelResource resource)
 
 void ResourceManager::RenderModel(ModelResource resource)
 {
-	m_models[resource]->Render(m_pImmediateContext);
+	if (resource == SkyDomeModel)
+	{
+		m_skyDome->Render(m_pImmediateContext);
+	}
+	else
+	{
+		m_models[resource]->Render(m_pImmediateContext);
+	}
 }
 
 #pragma endregion

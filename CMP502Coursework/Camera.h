@@ -16,6 +16,7 @@ public:
 	Camera(const XMFLOAT3 position, const float fAspectRatio);
 	~Camera();
 
+	XMFLOAT3 GetPosition();
 	XMMATRIX GetViewMatrix();
 	XMMATRIX GetProjectionMatrix();
 

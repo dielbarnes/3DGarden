@@ -15,8 +15,10 @@ GraphicsEngine::GraphicsEngine()
 	m_pRenderTargetView = nullptr;
 	m_pDepthStencilBuffer = nullptr;
 	m_pDepthStencilState = nullptr;
+	m_pDepthDisabledStencilState = nullptr;
 	m_pDepthStencilView = nullptr;
 	m_pRasterizerState = nullptr;
+	m_pRasterizerStateNoCulling = nullptr;
 	m_pCamera = nullptr;
 	m_pResourceManager = nullptr;
 	m_pShaderManager = nullptr;
@@ -33,8 +35,10 @@ GraphicsEngine::~GraphicsEngine()
 	SAFE_RELEASE(m_pRenderTargetView)
 	SAFE_RELEASE(m_pDepthStencilBuffer)
 	SAFE_RELEASE(m_pDepthStencilState)
+	SAFE_RELEASE(m_pDepthDisabledStencilState)
 	SAFE_RELEASE(m_pDepthStencilView)
 	SAFE_RELEASE(m_pRasterizerState)
+	SAFE_RELEASE(m_pRasterizerStateNoCulling)
 	SAFE_DELETE(m_pCamera)
 	SAFE_DELETE(m_pResourceManager)
 	SAFE_DELETE(m_pShaderManager)
@@ -280,6 +284,15 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	// Set the depth stencil state
 	m_pImmediateContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
 
+	// Create a depth stencil state which turns off the Z buffer for 2D rendering
+	depthStencilDesc.DepthEnable = false;
+	result = m_pDevice->CreateDepthStencilState(&depthStencilDesc, &m_pDepthDisabledStencilState);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to create depth disabled stencil state.", result);
+		return false;
+	}
+
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthViewDesc = {};
 	depthViewDesc.Format = depthBufferDesc.Format;
@@ -319,6 +332,15 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 
 	// Set the rasterizer state
 	m_pImmediateContext->RSSetState(m_pRasterizerState);
+
+	// Create a rasterizer state which turns off back face culling
+	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	result = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pRasterizerStateNoCulling);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to create rasterizer state without culling.", result);
+		return false;
+	}
 
 	// Setup the viewport
 	D3D11_VIEWPORT viewport = {};
@@ -551,6 +573,24 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 		return false;
 	}
 	m_pImmediateContext->OMSetBlendState(m_pAlphaDisabledBlendState, blendFactor, sampleMask);
+
+	// Turn off the Z buffer and back face culling
+	m_pImmediateContext->OMSetDepthStencilState(m_pDepthDisabledStencilState, 1);
+	m_pImmediateContext->RSSetState(m_pRasterizerStateNoCulling);
+
+	// Translate the sky dome to be centered around the camera position
+	XMMATRIX skyDomeTranslationMatrix = XMMatrixTranslation(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z);
+	m_pResourceManager->GetModel(ModelResource::SkyDomeModel)->TransformWorldMatrix(skyDomeTranslationMatrix, XMMatrixIdentity(), XMMatrixIdentity());
+
+	m_pResourceManager->RenderModel(ModelResource::SkyDomeModel);
+	if (!m_pShaderManager->RenderSkyDome(static_cast<SkyDome*>(m_pResourceManager->GetModel(ModelResource::SkyDomeModel)), m_pCamera))
+	{
+		return false;
+	}
+
+	// Turn on the Z buffer and back face culling
+	m_pImmediateContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
+	m_pImmediateContext->RSSetState(m_pRasterizerState);
 
 	// Present the back buffer to the front buffer
 	m_pSwapChain->Present(

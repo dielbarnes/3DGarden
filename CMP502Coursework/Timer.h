@@ -3,8 +3,8 @@
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
 
-#ifndef TIMERCLASS_H
-#define TIMERCLASS_H
+#ifndef TIMER_H
+#define TIMER_H
 
 #include <windows.h>
 

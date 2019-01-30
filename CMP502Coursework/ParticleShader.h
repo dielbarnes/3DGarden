@@ -9,7 +9,7 @@
 #include "Shader.h"
 #include "ParticleSystem.h"
 
-class ParticleShader : Shader
+class ParticleShader : public Shader
 {
 public:
 	ParticleShader(ID3D11Device &device, ID3D11DeviceContext &immediateContext);

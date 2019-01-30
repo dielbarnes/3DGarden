@@ -9,7 +9,7 @@
 #include "DDSTextureLoader.h"
 #include <fstream>
 #include <vector>
-#include "Model.h"
+#include "SkyDome.h"
 #include "Utils.h"
 
 enum TextureResource : int
@@ -37,7 +37,8 @@ enum ModelResource : int
 	HedgeModel,
 	HedgeModel2,
 	BalustradeModel,
-	BalustradeModel2
+	BalustradeModel2,
+	SkyDomeModel	  // Not in models array
 };
 
 class ResourceManager
@@ -56,6 +57,7 @@ private:
 	ID3D11DeviceContext* m_pImmediateContext;
 	std::vector<ID3D11ShaderResourceView*> m_textures;
 	std::vector<Model*> m_models;
+	SkyDome *m_skyDome;
 
 	HRESULT LoadTexture(TextureResource resource);
 	bool LoadModel(ModelResource resource);

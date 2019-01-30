@@ -60,7 +60,7 @@ HRESULT ParticleShader::Initialize()
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create texture sampler state.", result);
-		return false;
+		return result;
 	}
 
 	return result;

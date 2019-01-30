@@ -37,7 +37,7 @@ public:
 	Model();
 	~Model();
 
-	bool InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances = nullptr);
+	virtual bool InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances = nullptr);
 	void Render(ID3D11DeviceContext* immediateContext);
 
 	void SetTexture(ID3D11ShaderResourceView &texture);
@@ -48,13 +48,13 @@ public:
 	int GetInstanceCount();
 	void SetModelData(ModelData* modelData);
 	XMMATRIX GetWorldMatrix();
-	void TransformWorldMatrix(XMMATRIX scalingMatrix, XMMATRIX rotationMatrix, XMMATRIX translationMatrix);
+	void TransformWorldMatrix(XMMATRIX translationMatrix, XMMATRIX rotationMatrix, XMMATRIX scalingMatrix);
 	XMFLOAT4 GetAmbientColor();
 	XMFLOAT4 GetDiffuseColor();
 	void SetLightDirection(float x, float y, float z);
 	XMFLOAT3 GetLightDirection();
 
-private:
+protected:
 	ID3D11ShaderResourceView* m_pTexture;
 	ID3D11Buffer* m_pVertexBuffer;
 	int m_iVertexCount;

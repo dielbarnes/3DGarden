@@ -30,6 +30,11 @@ Camera::~Camera()
 
 #pragma region Getters
 
+XMFLOAT3 Camera::GetPosition()
+{
+	return m_position;
+}
+
 XMMATRIX Camera::GetViewMatrix()
 {
 	return m_viewMatrix;
