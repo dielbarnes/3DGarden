@@ -15,11 +15,11 @@ Camera::Camera(const XMFLOAT3 position, const float fAspectRatio)
 
 	// Initialize the projection matrix
 	m_projectionMatrix = XMMatrixPerspectiveFovLH( // Build a left-handed perspective projection matrix
-						//XM_PIDIV4,		// Pi/4 (45 degrees) field of view angle Y (90 degrees is top-down view)
-						XM_PI/2.5,		
-						fAspectRatio,	// Aspect ratio of view-space X:Y
-						0.1f,			// Near Z (distance to the near clipping plane); must be greater than 0
-						1000.0f);		// Far Z (distance to the far clipping plane); must be greater than 0
+							//XM_PIDIV4,		// Pi/4 (45 degrees) field of view angle Y (90 degrees is top-down view)
+							XM_PI/2.5,		
+							fAspectRatio,	// Aspect ratio of view-space X:Y
+							0.1f,			// Near Z (distance to the near clipping plane); must be greater than 0
+							1000.0f);		// Far Z (distance to the far clipping plane); must be greater than 0
 }
 
 Camera::~Camera()
@@ -79,9 +79,9 @@ void Camera::Update()
 
 	// Apply rotation
 
-	float pitch = m_rotation.x * XM_PI/180; // X axis
-	float yaw = m_rotation.y * XM_PI/180; // Y axis
-	float roll = m_rotation.z * XM_PI/180; // Z axis
+	float pitch = m_rotation.x * XM_PI/180;
+	float yaw = m_rotation.y * XM_PI/180;
+	float roll = m_rotation.z * XM_PI/180;
 	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
 	vLook = XMVector3TransformCoord(vLook, rotationMatrix);

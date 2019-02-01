@@ -111,24 +111,19 @@ LRESULT CALLBACK MainWindowProc(HWND hWindow, UINT uiMsg, WPARAM wParam, LPARAM 
 {
 	switch (uiMsg)
 	{
-		case WM_DESTROY:
+	case WM_DESTROY:
+	case WM_CLOSE:
+		PostQuitMessage(0);
+		return 0;
+	case WM_KEYUP:
+		if (wParam == VK_ESCAPE)
+		{
 			PostQuitMessage(0);
 			return 0;
-
-		case WM_CLOSE:
-			PostQuitMessage(0);
-			return 0;
-
-		case WM_KEYUP:
-			if (wParam == VK_ESCAPE)
-			{
-				PostQuitMessage(0);
-				return 0;
-			}
-
+		}
+	default:
 		// Pass other messages to the App message handler
-		default:
-			return g_pApplicationHandle->MessageHandler(hWindow, uiMsg, wParam, lParam);
+		return g_pApplicationHandle->MessageHandler(hWindow, uiMsg, wParam, lParam);
 	}
 }
 

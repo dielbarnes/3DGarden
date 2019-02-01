@@ -50,6 +50,7 @@ public:
 	bool LoadResources();
 	ID3D11ShaderResourceView* GetTexture(TextureResource resource);
 	Model* GetModel(ModelResource resource);
+	SkyDome* GetSkyDome();
 	void RenderModel(ModelResource resource);
 
 private:

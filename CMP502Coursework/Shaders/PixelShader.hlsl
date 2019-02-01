@@ -6,7 +6,7 @@
 Texture2D shaderTexture;
 SamplerState samplerState;
 
-// Light
+// Constant buffer
 
 cbuffer LightBuffer
 {

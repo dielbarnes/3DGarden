@@ -9,13 +9,20 @@
 
 SkyDome::SkyDome()
 {
+	m_pVertexBuffer = nullptr;
+	m_iVertexCount = 0;
+	m_pIndexBuffer = nullptr;
+	m_iIndexCount = 0;
+	m_worldMatrix = XMMatrixIdentity();
 }
 
 SkyDome::~SkyDome()
 {
+	SAFE_RELEASE(m_pVertexBuffer);
+	SAFE_RELEASE(m_pIndexBuffer);
 }
 
-bool SkyDome::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances)
+bool SkyDome::InitializeBuffers(ID3D11Device* device)
 {
 	HRESULT result = S_OK;
 
@@ -62,8 +69,6 @@ bool SkyDome::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instan
 		return result;
 	}
 
-	m_iInstanceCount = iInstanceCount;
-
 	// Release
 	SAFE_DELETE_ARRAY(vertices);
 	SAFE_DELETE_ARRAY(indices);
@@ -75,14 +80,44 @@ bool SkyDome::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instan
 
 #pragma region Setters/Getters
 
-void SkyDome::SetApexColor(XMFLOAT4 apexColor)
+void SkyDome::SetVertexCount(int iCount)
 {
-	m_apexColor = apexColor;
+	m_iVertexCount = iCount;
 }
 
-XMFLOAT4 SkyDome::GetApexColor()
+void SkyDome::SetIndexCount(int iCount)
 {
-	return m_apexColor;
+	m_iIndexCount = iCount;
+}
+
+int SkyDome::GetIndexCount()
+{
+	return m_iIndexCount;
+}
+
+void SkyDome::SetModelData(ModelData* modelData)
+{
+	m_modelData = modelData;
+}
+
+void SkyDome::SetWorldMatrix(XMMATRIX worldMatrix)
+{
+	m_worldMatrix = worldMatrix;
+}
+
+XMMATRIX SkyDome::GetWorldMatrix()
+{
+	return m_worldMatrix;
+}
+
+void SkyDome::SetTopColor(XMFLOAT4 topColor)
+{
+	m_topColor = topColor;
+}
+
+XMFLOAT4 SkyDome::GetTopColor()
+{
+	return m_topColor;
 }
 
 void SkyDome::SetCenterColor(XMFLOAT4 centerColor)
@@ -93,6 +128,30 @@ void SkyDome::SetCenterColor(XMFLOAT4 centerColor)
 XMFLOAT4 SkyDome::GetCenterColor()
 {
 	return m_centerColor;
+}
+
+void SkyDome::SetBottomColor(XMFLOAT4 bottomColor)
+{
+	m_bottomColor = bottomColor;
+}
+
+XMFLOAT4 SkyDome::GetBottomColor()
+{
+	return m_bottomColor;
+}
+
+#pragma endregion
+
+#pragma region Render
+
+void SkyDome::Render(ID3D11DeviceContext* immediateContext)
+{
+	UINT uiStrides = sizeof(SkyDomeVertex);
+	UINT uiOffsets = 0;
+
+	immediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &uiStrides, &uiOffsets);
+	immediateContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 #pragma endregion

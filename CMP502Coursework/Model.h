@@ -37,7 +37,7 @@ public:
 	Model();
 	~Model();
 
-	virtual bool InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances = nullptr);
+	bool InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances = nullptr);
 	void Render(ID3D11DeviceContext* immediateContext);
 
 	void SetTexture(ID3D11ShaderResourceView &texture);

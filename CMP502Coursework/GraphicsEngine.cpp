@@ -285,7 +285,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	m_pImmediateContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
 
 	// Create a depth stencil state which turns off the Z buffer for 2D rendering
-	depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	result = m_pDevice->CreateDepthStencilState(&depthStencilDesc, &m_pDepthDisabledStencilState);
 	if (FAILED(result))
 	{
@@ -409,7 +409,7 @@ void GraphicsEngine::OnMouseUp()
 
 void GraphicsEngine::OnMouseMove(WPARAM buttonState, int x, int y)
 {
-	if ((buttonState & MK_LBUTTON) != 0)
+	if (buttonState & MK_LBUTTON != 0)
 	{
 		float deltaX = float(x - m_mousePosition.x);
 		float deltaY = float(y - m_mousePosition.y);
@@ -580,10 +580,10 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 
 	// Translate the sky dome to be centered around the camera position
 	XMMATRIX skyDomeTranslationMatrix = XMMatrixTranslation(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z);
-	m_pResourceManager->GetModel(ModelResource::SkyDomeModel)->TransformWorldMatrix(skyDomeTranslationMatrix, XMMatrixIdentity(), XMMatrixIdentity());
+	m_pResourceManager->GetSkyDome()->SetWorldMatrix(skyDomeTranslationMatrix);
 
 	m_pResourceManager->RenderModel(ModelResource::SkyDomeModel);
-	if (!m_pShaderManager->RenderSkyDome(static_cast<SkyDome*>(m_pResourceManager->GetModel(ModelResource::SkyDomeModel)), m_pCamera))
+	if (!m_pShaderManager->RenderSkyDome(m_pResourceManager->GetSkyDome(), m_pCamera))
 	{
 		return false;
 	}

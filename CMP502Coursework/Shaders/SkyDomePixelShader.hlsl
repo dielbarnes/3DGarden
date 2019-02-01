@@ -3,12 +3,13 @@
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
 
-// Color
+// Constant buffer
 
 cbuffer ColorBuffer
 {
-	float4 apexColor;
+	float4 topColor;
 	float4 centerColor;
+	float4 bottomColor;
 };
 
 // Input
@@ -32,6 +33,9 @@ float4 PS(PS_INPUT input) : SV_TARGET
 		height = 0.0f;
 	}
 
-	// Determine the gradient color by interpolating between the apex and the center based on the height of the pixel
-	return lerp(centerColor, apexColor, height);
+	// Determine the gradient color by interpolating between the top, center and bottom based on the height of the pixel
+	float4 color = lerp(bottomColor, centerColor, height);
+	color = lerp(color, topColor, height / 2.0f);
+
+	return color;
 }

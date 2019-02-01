@@ -1,9 +1,18 @@
+//
+// ParticleVertexShader.hlsl
+// Copyright © 2018 Diel Barnes. All rights reserved.
+//
+
+// Matrix
+
 cbuffer MatrixBuffer
 {
-	matrix world;
-	matrix view;
-	matrix projection;
+	matrix worldMatrix;
+	matrix viewMatrix;
+	matrix projectionMatrix;
 };
+
+// Input/output
 
 struct VS_INPUT
 {
@@ -19,6 +28,8 @@ struct PS_INPUT
 	float4 color : COLOR;
 };
 
+// Entry point
+
 PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output;
@@ -27,9 +38,9 @@ PS_INPUT VS(VS_INPUT input)
 	input.position.w = 1.0f;
 
 	// Calculate the position of the vertex against the world, view, and projection matrices
-	output.position = mul(input.position, world);
-	output.position = mul(output.position, view);
-	output.position = mul(output.position, projection);
+	output.position = mul(input.position, worldMatrix);
+	output.position = mul(output.position, viewMatrix);
+	output.position = mul(output.position, projectionMatrix);
 
 	// Store the texture coordinates for the pixel shader
 	output.texCoord = input.texCoord;

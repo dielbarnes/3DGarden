@@ -11,8 +11,9 @@
 
 struct ColorBuffer // For pixel shader
 {
-	XMFLOAT4 apexColor;
+	XMFLOAT4 topColor;
 	XMFLOAT4 centerColor;
+	XMFLOAT4 bottomColor;
 };
 
 class SkyDomeShader : public Shader

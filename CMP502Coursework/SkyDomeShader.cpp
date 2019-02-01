@@ -85,10 +85,11 @@ bool SkyDomeShader::Render(SkyDome* pSkyDome, Camera* pCamera)
 
 	// Get a pointer to the color buffer data
 	ColorBuffer* colorBufferData = (ColorBuffer*)mappedResource.pData;
-	auto x = pSkyDome->GetApexColor();
+	
 	// Copy the colors into the color buffer
-	colorBufferData->apexColor = pSkyDome->GetApexColor();
+	colorBufferData->topColor = pSkyDome->GetTopColor();
 	colorBufferData->centerColor = pSkyDome->GetCenterColor();
+	colorBufferData->bottomColor = pSkyDome->GetBottomColor();
 
 	// Unlock the color buffer
 	m_pImmediateContext->Unmap(m_pColorBuffer, 0);

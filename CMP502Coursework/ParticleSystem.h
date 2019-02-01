@@ -52,7 +52,9 @@ private:
 	int m_iIndexCount;
 	Particle* m_particles;
 	XMMATRIX m_worldMatrix;
-	float m_fParticleDeviationX, m_fParticleDeviationY, m_fParticleDeviationZ;
+	float m_fParticleDeviationX;
+	float m_fParticleDeviationY;
+	float m_fParticleDeviationZ;
 	float m_fParticleVelocity;
 	float m_fParticleVelocityVariation;
 	float m_fParticleSize;

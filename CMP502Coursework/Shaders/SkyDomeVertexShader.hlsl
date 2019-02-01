@@ -3,7 +3,7 @@
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
 
-// Matrix
+// Constant buffer
 
 cbuffer MatrixBuffer
 {
@@ -37,7 +37,7 @@ PS_INPUT VS(VS_INPUT input)
 	// Calculate the position of the vertex against the world, view, and projection matrices
 	output.position = mul(input.position, worldMatrix);
 	output.position = mul(output.position, viewMatrix);
-	output.position = mul(output.position, projectionMatrix);
+	output.position = mul(output.position, projectionMatrix).xyww;
 
 	// Store the dome position for the pixel shader
 	output.domePosition = input.position;

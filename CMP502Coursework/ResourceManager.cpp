@@ -153,13 +153,13 @@ bool ResourceManager::LoadResources()
 	result = LoadTexture(TextureResource::HedgeTexture);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to load wall texture.", result);
+		Utils::ShowError("Failed to load hedge texture.", result);
 		return false;
 	}
 
 	if (!LoadModel(ModelResource::HedgeModel))
 	{
-		MessageBox(0, "Failed to load wall model.", "", 0);
+		MessageBox(0, "Failed to load hedge model.", "", 0);
 		return false;
 	}
 
@@ -208,8 +208,9 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	m_skyDome->SetApexColor(COLOR_XMF4(255.0f, 0.0f, 0.0f, 1.0f));
-	m_skyDome->SetCenterColor(COLOR_XMF4(0.0f, 255.0f, 0.0f, 1.0f));
+	m_skyDome->SetTopColor(COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f)); // Light pink
+	m_skyDome->SetCenterColor(COLOR_XMF4(200.0f, 180.0f, 180.0f, 1.0f)); // Light gray
+	m_skyDome->SetBottomColor(COLOR_XMF4(255.0f, 193.0f, 127.0f, 1.0f)); // Light orange
 
 	// Initialize the vertex, index, and instance buffers
 
@@ -377,7 +378,7 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	result = m_skyDome->InitializeBuffers(m_pDevice, 1);
+	result = m_skyDome->InitializeBuffers(m_pDevice);
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to initialize the sky dome vertex and index buffers.", result);
@@ -576,14 +577,12 @@ ID3D11ShaderResourceView* ResourceManager::GetTexture(TextureResource resource)
 
 Model* ResourceManager::GetModel(ModelResource resource)
 {
-	if (resource == SkyDomeModel)
-	{
-		return m_skyDome;
-	}
-	else
-	{
-		return m_models[resource];
-	}
+	return m_models[resource];
+}
+
+SkyDome* ResourceManager::GetSkyDome()
+{
+	return m_skyDome;
 }
 
 #pragma endregion
