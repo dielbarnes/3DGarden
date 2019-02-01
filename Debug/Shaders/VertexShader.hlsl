@@ -3,7 +3,7 @@
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
 
-// Matrix
+// Constant buffer
 
 cbuffer MatrixBuffer
 {
