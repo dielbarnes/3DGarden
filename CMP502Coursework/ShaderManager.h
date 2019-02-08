@@ -9,6 +9,7 @@
 #include "LightShader.h"
 #include "ParticleShader.h"
 #include "SkyDomeShader.h"
+#include "SkyPlaneShader.h"
 
 class ShaderManager
 {
@@ -20,11 +21,13 @@ public:
 	bool RenderModel(Model* pModel, Camera* pCamera);
 	bool RenderParticles(ParticleSystem *pParticleSystem, Camera* pCamera);
 	bool RenderSkyDome(SkyDome *pSkyDome, Camera* pCamera);
+	bool RenderSkyPlane(SkyPlane *pSkyPlane, Camera* pCamera);
 
 private:
 	LightShader* m_pLightShader;
 	ParticleShader* m_pParticleShader;
 	SkyDomeShader* m_pSkyDomeShader;
+	SkyPlaneShader* m_pSkyPlaneShader;
 };
 
 #endif

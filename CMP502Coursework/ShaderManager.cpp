@@ -12,6 +12,7 @@ ShaderManager::ShaderManager(ID3D11Device &device, ID3D11DeviceContext &immediat
 	m_pLightShader = new LightShader(device, immediateContext);
 	m_pParticleShader = new ParticleShader(device, immediateContext);
 	m_pSkyDomeShader = new SkyDomeShader(device, immediateContext);
+	m_pSkyPlaneShader = new SkyPlaneShader(device, immediateContext);
 }
 
 ShaderManager::~ShaderManager()
@@ -19,6 +20,7 @@ ShaderManager::~ShaderManager()
 	SAFE_DELETE(m_pLightShader)
 	SAFE_DELETE(m_pParticleShader)
 	SAFE_DELETE(m_pSkyDomeShader)
+	SAFE_DELETE(m_pSkyPlaneShader)
 }
 
 HRESULT ShaderManager::InitializeShaders()
@@ -36,6 +38,12 @@ HRESULT ShaderManager::InitializeShaders()
 	}
 
 	result = m_pSkyDomeShader->Initialize();
+	if (FAILED(result))
+	{
+		return result;
+	}
+
+	result = m_pSkyPlaneShader->Initialize();
 	return result;
 }
 
@@ -56,6 +64,11 @@ bool ShaderManager::RenderParticles(ParticleSystem *pParticleSystem, Camera* pCa
 bool ShaderManager::RenderSkyDome(SkyDome *pSkyDome, Camera* pCamera)
 {
 	return m_pSkyDomeShader->Render(pSkyDome, pCamera);
+}
+
+bool ShaderManager::RenderSkyPlane(SkyPlane *pSkyPlane, Camera* pCamera)
+{
+	return m_pSkyPlaneShader->Render(pSkyPlane, pCamera);
 }
 
 #pragma endregion

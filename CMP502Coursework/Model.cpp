@@ -32,8 +32,6 @@ Model::~Model()
 
 bool Model::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance* instances)
 {
-	HRESULT result = S_OK;
-
 	Vertex* vertices = new Vertex[m_iVertexCount];
 	unsigned long* indices = new unsigned long[m_iIndexCount];
 
@@ -58,11 +56,11 @@ bool Model::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance
 	D3D11_SUBRESOURCE_DATA subresourceData = {}; // Describes the actual data that will be copied to the vertex buffer during creation
 	subresourceData.pSysMem = vertices;
 
-	result = device->CreateBuffer(&bufferDesc, &subresourceData, &m_pVertexBuffer);
+	HRESULT result = device->CreateBuffer(&bufferDesc, &subresourceData, &m_pVertexBuffer);
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create vertex buffer.", result);
-		return result;
+		return false;
 	}
 
 	// Create the index buffer
@@ -76,7 +74,7 @@ bool Model::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create index buffer.", result);
-		return result;
+		return false;
 	}
 
 	m_iInstanceCount = iInstanceCount;
@@ -94,7 +92,7 @@ bool Model::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance
 		if (FAILED(result))
 		{
 			Utils::ShowError("Failed to create instance buffer.", result);
-			return result;
+			return false;
 		}
 	}
 
@@ -102,7 +100,7 @@ bool Model::InitializeBuffers(ID3D11Device* device, int iInstanceCount, Instance
 	SAFE_DELETE_ARRAY(vertices);
 	SAFE_DELETE_ARRAY(indices);
 
-	return result;
+	return true;
 }
 
 #pragma endregion

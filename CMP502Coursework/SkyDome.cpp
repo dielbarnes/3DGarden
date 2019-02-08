@@ -24,8 +24,6 @@ SkyDome::~SkyDome()
 
 bool SkyDome::InitializeBuffers(ID3D11Device* device)
 {
-	HRESULT result = S_OK;
-
 	SkyDomeVertex* vertices = new SkyDomeVertex[m_iVertexCount];
 	unsigned long* indices = new unsigned long[m_iIndexCount];
 
@@ -41,39 +39,39 @@ bool SkyDome::InitializeBuffers(ID3D11Device* device)
 
 	D3D11_BUFFER_DESC bufferDesc = {}; // Describes the vertex buffer object to be created
 	bufferDesc.ByteWidth = sizeof(SkyDomeVertex) * m_iVertexCount;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;						// Require read and write access by the GPU
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;			// Bind the buffer as a vertex buffer to the input assembler stage
-	bufferDesc.CPUAccessFlags = 0;								// No CPU access is necessary
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;							// Require read and write access by the GPU
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;				// Bind the buffer as a vertex buffer to the input assembler stage
+	bufferDesc.CPUAccessFlags = 0;									// No CPU access is necessary
 
 	D3D11_SUBRESOURCE_DATA subresourceData = {}; // Describes the actual data that will be copied to the vertex buffer during creation
 	subresourceData.pSysMem = vertices;
 
-	result = device->CreateBuffer(&bufferDesc, &subresourceData, &m_pVertexBuffer);
+	HRESULT result = device->CreateBuffer(&bufferDesc, &subresourceData, &m_pVertexBuffer);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to create sky dome vertex buffer.", result);
-		return result;
+		Utils::ShowError("Failed to create vertex buffer.", result);
+		return false;
 	}
 
 	// Create the index buffer
 
 	bufferDesc.ByteWidth = sizeof(unsigned long) * m_iIndexCount;
-	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;				// Bind the buffer as an index buffer to the input assembler stage
+	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;					// Bind the buffer as an index buffer to the input assembler stage
 
 	subresourceData.pSysMem = indices;
 
 	result = device->CreateBuffer(&bufferDesc, &subresourceData, &m_pIndexBuffer);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to create sky dome index buffer.", result);
-		return result;
+		Utils::ShowError("Failed to create index buffer.", result);
+		return false;
 	}
 
 	// Release
 	SAFE_DELETE_ARRAY(vertices);
 	SAFE_DELETE_ARRAY(indices);
 
-	return result;
+	return true;
 }
 
 #pragma endregion

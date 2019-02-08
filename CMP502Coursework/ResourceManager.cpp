@@ -24,6 +24,7 @@ ResourceManager::~ResourceManager()
 		SAFE_DELETE(model);
 	}
 	SAFE_DELETE(m_skyDome);
+	SAFE_DELETE(m_skyPlane);
 }
 
 bool ResourceManager::LoadResources()
@@ -212,26 +213,43 @@ bool ResourceManager::LoadResources()
 	m_skyDome->SetCenterColor(COLOR_XMF4(200.0f, 180.0f, 180.0f, 1.0f)); // Light gray
 	m_skyDome->SetBottomColor(COLOR_XMF4(255.0f, 193.0f, 127.0f, 1.0f)); // Light orange
 
-	// Initialize the vertex, index, and instance buffers
+	// Cloud (sky plane)
 
-	result = m_models[ModelResource::StatueModel]->InitializeBuffers(m_pDevice, 1);
+	result = LoadTexture(TextureResource::CloudTexture1);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to initialize the statue vertex and index buffers.", result);
+		Utils::ShowError("Failed to load first cloud texture.", result);
 		return false;
 	}
 
-	/*result = m_models[ModelResource::LionModel]->InitializeBuffers(m_pDevice, 1);
+	result = LoadTexture(TextureResource::CloudTexture2);
 	if (FAILED(result))
 	{
-		Utils::ShowError("Failed to initialize the lion vertex and index buffers.", result);
+		Utils::ShowError("Failed to load second cloud texture.", result);
+		return false;
+	}
+
+	m_skyPlane = new SkyPlane();
+	m_skyPlane->SetTexture1(*m_textures[TextureResource::CloudTexture1]);
+	m_skyPlane->SetTexture2(*m_textures[TextureResource::CloudTexture2]);
+
+	// Initialize the vertex, index, and instance buffers
+
+	if (!m_models[ModelResource::StatueModel]->InitializeBuffers(m_pDevice, 1))
+	{
+		MessageBox(0, "Failed to initialize statue vertex and index buffers.", "", 0);
+		return false;
+	}
+
+	/*if (!m_models[ModelResource::LionModel]->InitializeBuffers(m_pDevice, 1))
+	{
+		MessageBox(0, "Failed to initialize lion vertex and index buffers.", "", 0);
 		return false;
 	}*/
 
-	/*result = m_models[ModelResource::VaseModel]->InitializeBuffers(m_pDevice, 1);
-	if (FAILED(result))
+	/*if (!m_models[ModelResource::VaseModel]->InitializeBuffers(m_pDevice, 1))
 	{
-		Utils::ShowError("Failed to initialize the vase vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize vase vertex and index buffers.", "", 0);
 		return false;
 	}*/
 
@@ -247,17 +265,15 @@ bool ResourceManager::LoadResources()
 	pillarInstances[5].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(0.55f, -0.07f, 0.0f) * pillarRotationMatrix * pillarScalingMatrix);
 	pillarInstances[6].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(0.75f, -0.4f, 0.0f) * pillarRotationMatrix * pillarScalingMatrix);
 	pillarInstances[7].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(0.8f, -0.8f, 0.0f) * pillarRotationMatrix * pillarScalingMatrix);
-	result = m_models[ModelResource::PillarModel]->InitializeBuffers(m_pDevice, iPillarsCount, pillarInstances);
-	if (FAILED(result))
+	if (!m_models[ModelResource::PillarModel]->InitializeBuffers(m_pDevice, iPillarsCount, pillarInstances))
 	{
-		Utils::ShowError("Failed to initialize the pillar vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize pillar vertex and index buffers.", "", 0);
 		return false;
 	}
 
-	result = m_models[ModelResource::FountainModel]->InitializeBuffers(m_pDevice, 1);
-	if (FAILED(result))
+	if (!m_models[ModelResource::FountainModel]->InitializeBuffers(m_pDevice, 1))
 	{
-		Utils::ShowError("Failed to initialize the fountain vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize fountain vertex and index buffers.", "", 0);
 		return false;
 	}
 
@@ -280,10 +296,9 @@ bool ResourceManager::LoadResources()
 	lupineInstances[13].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(-180.0f, 0.0f, -485.0f) * lupineScalingMatrix);
 	lupineInstances[14].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(180.0f, 0.0f, -405.0f) * lupineScalingMatrix);
 	lupineInstances[15].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(180.0f, 0.0f, -485.0f) * lupineScalingMatrix);
-	result = m_models[ModelResource::LupineModel]->InitializeBuffers(m_pDevice, iLupineCount, lupineInstances);
-	if (FAILED(result))
+	if (!m_models[ModelResource::LupineModel]->InitializeBuffers(m_pDevice, iLupineCount, lupineInstances))
 	{
-		Utils::ShowError("Failed to initialize the lupine vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize lupine vertex and index buffers.", "", 0);
 		return false;
 	}
 
@@ -317,17 +332,15 @@ bool ResourceManager::LoadResources()
 	lavenderInstances[24].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(1850.0f, -250.0f, -1650.0f) * lavenderScalingMatrix);
 	lavenderInstances[25].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(1950.0f, -250.0f, -1550.0f) * lavenderScalingMatrix);
 	lavenderInstances[26].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(2050.0f, -250.0f, -1550.0f) * lavenderScalingMatrix);
-	result = m_models[ModelResource::LavenderModel]->InitializeBuffers(m_pDevice, iLavenderCount, lavenderInstances);
-	if (FAILED(result))
+	if (!m_models[ModelResource::LavenderModel]->InitializeBuffers(m_pDevice, iLavenderCount, lavenderInstances))
 	{
-		Utils::ShowError("Failed to initialize the lavender vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize lavender vertex and index buffers.", "", 0);
 		return false;
 	}
 
-	result = m_models[ModelResource::GroundModel]->InitializeBuffers(m_pDevice, 1);
-	if (FAILED(result))
+	if (!m_models[ModelResource::GroundModel]->InitializeBuffers(m_pDevice, 1))
 	{
-		Utils::ShowError("Failed to initialize the ground vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize ground vertex and index buffers.", "", 0);
 		return false;
 	}
 
@@ -336,17 +349,15 @@ bool ResourceManager::LoadResources()
 	Instance* hedgeInstances = new Instance[iHedgesCount];
 	hedgeInstances[0].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(-5.0f, -20.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, XM_PI * -0.5f, 0.0f) * hedgeScalingMatrix);
 	hedgeInstances[1].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(0.0f, -15.0f, 20.0f) * XMMatrixRotationRollPitchYaw(XM_PI * -0.5f, 0.0f, 0.0f) * hedgeScalingMatrix);
-	result = m_models[ModelResource::HedgeModel]->InitializeBuffers(m_pDevice, iHedgesCount, hedgeInstances);
-	if (FAILED(result))
+	if (!m_models[ModelResource::HedgeModel]->InitializeBuffers(m_pDevice, iHedgesCount, hedgeInstances))
 	{
-		Utils::ShowError("Failed to initialize the hedge vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize hedge vertex and index buffers.", "", 0);
 		return false;
 	}
 
-	result = m_models[ModelResource::HedgeModel2]->InitializeBuffers(m_pDevice, 1);
-	if (FAILED(result))
+	if (!m_models[ModelResource::HedgeModel2]->InitializeBuffers(m_pDevice, 1))
 	{
-		Utils::ShowError("Failed to initialize the hedge vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize hedge vertex and index buffers.", "", 0);
 		return false;
 	}
 
@@ -359,10 +370,9 @@ bool ResourceManager::LoadResources()
 	balustradeInstances[3].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(0.45f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * -0.5f, 0.0f) * balustradeScalingMatrix);
 	balustradeInstances[4].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(-0.36f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * -0.5f, 0.0f) * balustradeScalingMatrix);
 	balustradeInstances[5].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(-1.17f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * -0.5f, 0.0f) * balustradeScalingMatrix);
-	result = m_models[ModelResource::BalustradeModel]->InitializeBuffers(m_pDevice, iBalustradesCount, balustradeInstances);
-	if (FAILED(result))
+	if (!m_models[ModelResource::BalustradeModel]->InitializeBuffers(m_pDevice, iBalustradesCount, balustradeInstances))
 	{
-		Utils::ShowError("Failed to initialize the balustrade vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize balustrade vertex and index buffers.", "", 0);
 		return false;
 	}
 
@@ -371,17 +381,21 @@ bool ResourceManager::LoadResources()
 	balustradeInstances2[0].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(-0.5f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * 0.5f, 0.0f) * balustradeScalingMatrix);
 	balustradeInstances2[1].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(0.31f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * 0.5f, 0.0f) * balustradeScalingMatrix);
 	balustradeInstances2[2].worldMatrix = XMMatrixTranspose(XMMatrixTranslation(1.12f, -0.125f, 1.273f) * XMMatrixRotationRollPitchYaw(0.0f, XM_PI * 0.5f, 0.0f) * balustradeScalingMatrix);
-	result = m_models[ModelResource::BalustradeModel2]->InitializeBuffers(m_pDevice, iBalustradesCount2, balustradeInstances2);
-	if (FAILED(result))
+	if (!m_models[ModelResource::BalustradeModel2]->InitializeBuffers(m_pDevice, iBalustradesCount2, balustradeInstances2))
 	{
-		Utils::ShowError("Failed to initialize the balustrade vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize balustrade vertex and index buffers.", "", 0);
 		return false;
 	}
 
-	result = m_skyDome->InitializeBuffers(m_pDevice);
-	if (FAILED(result))
+	if (!m_skyDome->InitializeBuffers(m_pDevice))
 	{
-		Utils::ShowError("Failed to initialize the sky dome vertex and index buffers.", result);
+		MessageBox(0, "Failed to initialize sky dome vertex and index buffers.", "", 0);
+		return false;
+	}
+
+	if (!m_skyPlane->Initialize(m_pDevice))
+	{
+		MessageBox(0, "Failed to initialize sky plane.", "", 0);
 		return false;
 	}
 
@@ -437,6 +451,12 @@ HRESULT ResourceManager::LoadTexture(TextureResource resource)
 		break;
 	case ParticleTexture:
 		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/particle.dds", nullptr, &texture, 0, nullptr);
+		break;
+	case CloudTexture1:
+		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/cloud1.dds", nullptr, &texture, 0, nullptr);
+		break;
+	case CloudTexture2:
+		result = CreateDDSTextureFromFile(m_pDevice, m_pImmediateContext, L"Resources/cloud2.dds", nullptr, &texture, 0, nullptr);
 		break;
 	}
 	if (FAILED(result))
@@ -585,6 +605,11 @@ SkyDome* ResourceManager::GetSkyDome()
 	return m_skyDome;
 }
 
+SkyPlane* ResourceManager::GetSkyPlane()
+{
+	return m_skyPlane;
+}
+
 #pragma endregion
 
 #pragma region Render
@@ -599,6 +624,11 @@ void ResourceManager::RenderModel(ModelResource resource)
 	{
 		m_models[resource]->Render(m_pImmediateContext);
 	}
+}
+
+void ResourceManager::RenderSkyPlane()
+{
+	m_skyPlane->Render(m_pImmediateContext);
 }
 
 #pragma endregion

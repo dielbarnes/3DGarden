@@ -10,6 +10,7 @@
 #include <fstream>
 #include <vector>
 #include "SkyDome.h"
+#include "SkyPlane.h"
 #include "Utils.h"
 
 enum TextureResource : int
@@ -21,7 +22,9 @@ enum TextureResource : int
 	LavenderTexture,
 	GroundTexture,
 	HedgeTexture,
-	ParticleTexture
+	ParticleTexture,
+	CloudTexture1,
+	CloudTexture2
 };
 
 enum ModelResource : int
@@ -38,7 +41,7 @@ enum ModelResource : int
 	HedgeModel2,
 	BalustradeModel,
 	BalustradeModel2,
-	SkyDomeModel	  // Not in models array
+	SkyDomeModel,	  // Not in models array
 };
 
 class ResourceManager
@@ -51,7 +54,9 @@ public:
 	ID3D11ShaderResourceView* GetTexture(TextureResource resource);
 	Model* GetModel(ModelResource resource);
 	SkyDome* GetSkyDome();
+	SkyPlane* GetSkyPlane();
 	void RenderModel(ModelResource resource);
+	void RenderSkyPlane();
 
 private:
 	ID3D11Device* m_pDevice;
@@ -59,6 +64,7 @@ private:
 	std::vector<ID3D11ShaderResourceView*> m_textures;
 	std::vector<Model*> m_models;
 	SkyDome *m_skyDome;
+	SkyPlane *m_skyPlane;
 
 	HRESULT LoadTexture(TextureResource resource);
 	bool LoadModel(ModelResource resource);

@@ -47,7 +47,7 @@ HRESULT LightShader::Initialize()
 
 	UINT uiElementCount = ARRAYSIZE(vertexInputDesc);
 
-	result = Shader::Initialize(L"Shaders/VertexShader.hlsl", "VS", L"Shaders/PixelShader.hlsl", "PS", vertexInputDesc, uiElementCount);
+	result = Shader::Initialize(L"Shaders/LightVertexShader.hlsl", "VS", L"Shaders/LightPixelShader.hlsl", "PS", vertexInputDesc, uiElementCount);
 	if (FAILED(result))
 	{
 		return result;
@@ -55,7 +55,7 @@ HRESULT LightShader::Initialize()
 
 	// Compile the instanced vertex shader
 	ID3DBlob* pCompiledInstancedVertexShader;
-	result = CompileShaderFromFile(L"Shaders/InstancedVertexShader.hlsl", "IVS", "vs_5_0", &pCompiledInstancedVertexShader);
+	result = CompileShaderFromFile(L"Shaders/LightInstancedVertexShader.hlsl", "IVS", "vs_5_0", &pCompiledInstancedVertexShader);
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to compile instanced vertex shader.", result);

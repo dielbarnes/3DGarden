@@ -66,6 +66,12 @@
     <ClCompile Include="SkyDome.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SkyPlane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyPlaneShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils.h">
@@ -113,17 +119,14 @@
     <ClInclude Include="SkyDome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkyPlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyPlaneShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\PixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\VertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\InstancedVertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\ParticleVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -134,6 +137,21 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\SkyDomePixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SkyPlaneVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SkyPlanePixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightInstancedVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -183,6 +201,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\particle.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\cloud1.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\cloud2.dds">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

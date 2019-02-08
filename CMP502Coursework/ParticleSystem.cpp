@@ -138,6 +138,8 @@ bool ParticleSystem::Update(float fFrameTime, ID3D11DeviceContext* immediateCont
 	int index = 0;
 	for (int i = 0; i < m_iCurrentParticleCount; i++)
 	{
+		// Triangle 1
+
 		// Bottom left
 		m_vertices[index].position = XMFLOAT3(m_particles[i].x - m_fParticleSize, m_particles[i].y - m_fParticleSize, m_particles[i].z);
 		m_vertices[index].textureCoordinate = XMFLOAT2(0.0f, 1.0f);
@@ -155,6 +157,8 @@ bool ParticleSystem::Update(float fFrameTime, ID3D11DeviceContext* immediateCont
 		m_vertices[index].textureCoordinate = XMFLOAT2(1.0f, 1.0f);
 		m_vertices[index].color = XMFLOAT4(m_particles[i].red, m_particles[i].green, m_particles[i].blue, 1.0f);
 		index++;
+
+		// Triangle 2
 
 		// Bottom right
 		m_vertices[index].position = XMFLOAT3(m_particles[i].x + m_fParticleSize, m_particles[i].y - m_fParticleSize, m_particles[i].z);

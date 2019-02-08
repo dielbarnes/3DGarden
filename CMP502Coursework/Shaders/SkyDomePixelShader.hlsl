@@ -34,8 +34,8 @@ float4 PS(PS_INPUT input) : SV_TARGET
 	}
 
 	// Determine the gradient color by interpolating between the top, center and bottom based on the height of the pixel
-	float4 color = lerp(bottomColor, centerColor, height);
-	color = lerp(color, topColor, height / 2.0f);
+	float4 outputColor = lerp(bottomColor, centerColor, height);
+	outputColor = lerp(outputColor, topColor, height / 2.0f);
 
-	return color;
+	return outputColor;
 }

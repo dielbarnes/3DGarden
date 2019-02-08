@@ -23,7 +23,8 @@ GraphicsEngine::GraphicsEngine()
 	m_pResourceManager = nullptr;
 	m_pShaderManager = nullptr;
 	m_pParticleSystem = nullptr;
-	m_pAlphaEnabledBlendState = nullptr;
+	m_pAlphaEnabledBlendState1 = nullptr;
+	m_pAlphaEnabledBlendState2 = nullptr;
 	m_pAlphaDisabledBlendState = nullptr;
 }
 
@@ -43,7 +44,8 @@ GraphicsEngine::~GraphicsEngine()
 	SAFE_DELETE(m_pResourceManager)
 	SAFE_DELETE(m_pShaderManager)
 	SAFE_DELETE(m_pParticleSystem)
-	SAFE_RELEASE(m_pAlphaEnabledBlendState)
+	SAFE_RELEASE(m_pAlphaEnabledBlendState1)
+	SAFE_RELEASE(m_pAlphaEnabledBlendState2)
 	SAFE_RELEASE(m_pAlphaDisabledBlendState)
 }
 
@@ -57,6 +59,7 @@ bool GraphicsEngine::Initialize(int& iScreenWidth, int& iScreenHeight, HWND hWin
 
 	// Create device, swap chain, render target view, depth stencil state, depth stencil view, and rasterizer state
 	// Setup the viewport
+	// Create blend states
 	if (FAILED(InitDirect3D(iScreenWidth, iScreenHeight, hWindow)))
 	{
 		return false;
@@ -278,7 +281,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create depth stencil state.", result);
-		return false;
+		return result;
 	}
 
 	// Set the depth stencil state
@@ -290,7 +293,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create depth disabled stencil state.", result);
-		return false;
+		return result;
 	}
 
 	// Create the depth stencil view
@@ -327,7 +330,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create rasterizer state.", result);
-		return false;
+		return result;
 	}
 
 	// Set the rasterizer state
@@ -339,7 +342,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	if (FAILED(result))
 	{
 		Utils::ShowError("Failed to create rasterizer state without culling.", result);
-		return false;
+		return result;
 	}
 
 	// Setup the viewport
@@ -353,6 +356,41 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	m_pImmediateContext->RSSetViewports(
 							1,			// Number of viewports to bind
 							&viewport);
+
+	// Create blend states
+
+	D3D11_BLEND_DESC blendStateDesc = {};
+	blendStateDesc.AlphaToCoverageEnable = TRUE;										 // Use alpha-to-coverage as a multisampling technique when setting a pixel to a render target
+	blendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;							 // Operation to perform on the RGB value that the pixel shader outputs
+	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;				 // Operation to perform on the current RGB value in the render target
+	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;						 // How to combine the SrcBlend and DestBlend operations
+	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;						 // Operation to perform on the alpha value that the pixel shader outputs
+	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;					 // Operation to perform on the current alpha value in the render target
+	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;					 // How to combine the SrcBlendAlpha and DestBlendAlpha operations
+	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // Identify which components of each pixel of a render target are writable during blending
+	result = m_pDevice->CreateBlendState(&blendStateDesc, &m_pAlphaEnabledBlendState1);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to create alpha enabled blend state with render target pre-blend operation.", result);
+		return result;
+	}
+
+	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	result = m_pDevice->CreateBlendState(&blendStateDesc, &m_pAlphaEnabledBlendState2);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to create alpha enabled blend state without render target pre-blend operation.", result);
+		return result;
+	}
+
+	blendStateDesc.RenderTarget[0].BlendEnable = FALSE;
+	result = m_pDevice->CreateBlendState(&blendStateDesc, &m_pAlphaDisabledBlendState);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to create alpha disabled blend state.", result);
+		return result;
+	}
 
 	// Release
 	SAFE_RELEASE(pBackBuffer)
@@ -443,26 +481,7 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 	// Update camera
 	m_pCamera->Update();
 
-	// Create blend state
-	D3D11_BLEND_DESC blendStateDesc = {};
-	blendStateDesc.AlphaToCoverageEnable = TRUE;										 // Use alpha-to-coverage as a multisampling technique when setting a pixel to a render target
-	blendStateDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;							 // Operation to perform on the RGB value that the pixel shader outputs
-	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;				 // Operation to perform on the current RGB value in the render target
-	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;						 // How to combine the SrcBlend and DestBlend operations
-	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;						 // Operation to perform on the alpha value that the pixel shader outputs
-	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;					 // Operation to perform on the current alpha value in the render target
-	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;					 // How to combine the SrcBlendAlpha and DestBlendAlpha operations
-	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // Identify which components of each pixel of a render target are writable during blending
-	HRESULT result = m_pDevice->CreateBlendState(&blendStateDesc, &m_pAlphaEnabledBlendState);
-	if (FAILED(result))
-	{
-		Utils::ShowError("Failed to create alpha enabled blend state.", result);
-		return false;
-	}
-
-	float blendFactor[4] = COLOR_F4(0.0f, 0.0f, 0.0f, 0.0f)
-	UINT sampleMask = 0xffffffff;
+	// Render models
 
 	// Set the vertex and index buffers and the primitive topology
 	m_pResourceManager->RenderModel(ModelResource::StatueModel);
@@ -533,9 +552,11 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 		return false;
 	}
 
-	// Turn on alpha blending
+	// Turn on alpha blending with render target blend operation
+	float blendFactor[4] = COLOR_F4(0.0f, 0.0f, 0.0f, 0.0f)
+	UINT sampleMask = 0xffffffff;
 	m_pImmediateContext->OMSetBlendState(
-							m_pAlphaEnabledBlendState,
+							m_pAlphaEnabledBlendState1,
 							blendFactor,				// Array of blend factors, one for each RGBA component; modulate values for the pixel shader, render target, or both
 							sampleMask);				// Determines which samples get updated in all the active render targets
 
@@ -545,15 +566,39 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 		return false;
 	}
 
-	// Change the render target blend operation
-	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	result = m_pDevice->CreateBlendState(&blendStateDesc, &m_pAlphaEnabledBlendState);
-	if (FAILED(result))
+	// Turn off alpha blending
+	m_pImmediateContext->OMSetBlendState(m_pAlphaDisabledBlendState, blendFactor, sampleMask);
+
+	// Turn off the Z buffer
+	m_pImmediateContext->OMSetDepthStencilState(m_pDepthDisabledStencilState, 1);
+
+	// Turn off back face culling
+	m_pImmediateContext->RSSetState(m_pRasterizerStateNoCulling);
+
+	// Translate the sky dome to be centered around the camera position
+	XMMATRIX skyTransformationMatrix = XMMatrixTranslation(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z);
+	m_pResourceManager->GetSkyDome()->SetWorldMatrix(skyTransformationMatrix);
+
+	// Render sky dome
+	m_pResourceManager->RenderModel(ModelResource::SkyDomeModel);
+	if (!m_pShaderManager->RenderSkyDome(m_pResourceManager->GetSkyDome(), m_pCamera))
 	{
-		Utils::ShowError("Failed to change the render target blend operation.", result);
 		return false;
 	}
-	m_pImmediateContext->OMSetBlendState(m_pAlphaEnabledBlendState, blendFactor, sampleMask);
+
+	// Turn on alpha blending without render target blend operation
+	m_pImmediateContext->OMSetBlendState(m_pAlphaEnabledBlendState2, blendFactor, sampleMask);
+
+	// Translate the sky plane to be centered around the camera position
+	skyTransformationMatrix *= XMMatrixRotationRollPitchYaw(XM_PI * 0.02f, 0.0f, 0.0f);
+	m_pResourceManager->GetSkyPlane()->SetWorldMatrix(skyTransformationMatrix);
+
+	// Render sky plane
+	m_pResourceManager->RenderSkyPlane();
+	if (!m_pShaderManager->RenderSkyPlane(m_pResourceManager->GetSkyPlane(), m_pCamera))
+	{
+		return false;
+	}
 
 	// Run the frame processing for the particle system
 	m_pParticleSystem->Update(fFrameTime, m_pImmediateContext);
@@ -565,31 +610,12 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 	}
 
 	// Turn off alpha blending
-	blendStateDesc.RenderTarget[0].BlendEnable = FALSE;
-	result = m_pDevice->CreateBlendState(&blendStateDesc, &m_pAlphaDisabledBlendState);
-	if (FAILED(result))
-	{
-		Utils::ShowError("Failed to create alpha disabled blend state.", result);
-		return false;
-	}
 	m_pImmediateContext->OMSetBlendState(m_pAlphaDisabledBlendState, blendFactor, sampleMask);
 
-	// Turn off the Z buffer and back face culling
-	m_pImmediateContext->OMSetDepthStencilState(m_pDepthDisabledStencilState, 1);
-	m_pImmediateContext->RSSetState(m_pRasterizerStateNoCulling);
-
-	// Translate the sky dome to be centered around the camera position
-	XMMATRIX skyDomeTranslationMatrix = XMMatrixTranslation(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z);
-	m_pResourceManager->GetSkyDome()->SetWorldMatrix(skyDomeTranslationMatrix);
-
-	m_pResourceManager->RenderModel(ModelResource::SkyDomeModel);
-	if (!m_pShaderManager->RenderSkyDome(m_pResourceManager->GetSkyDome(), m_pCamera))
-	{
-		return false;
-	}
-
-	// Turn on the Z buffer and back face culling
+	// Turn on the Z buffer
 	m_pImmediateContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
+
+	// Turn on back face culling
 	m_pImmediateContext->RSSetState(m_pRasterizerState);
 
 	// Present the back buffer to the front buffer
