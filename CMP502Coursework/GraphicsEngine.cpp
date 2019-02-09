@@ -89,7 +89,6 @@ bool GraphicsEngine::Initialize(int& iScreenWidth, int& iScreenHeight, HWND hWin
 		return false;
 	}
 	m_pParticleSystem->SetTexture(*m_pResourceManager->GetTexture(TextureResource::ParticleTexture));
-	m_pParticleSystem->SetWorldMatrix(XMMatrixTranslation(0.0f, 5.5f, -7.5f));
 
 	return true;
 }
@@ -602,6 +601,12 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 
 	// Run the frame processing for the particle system
 	m_pParticleSystem->Update(fFrameTime, m_pImmediateContext);
+	// Billboarding
+	XMFLOAT3 particlePosition = XMFLOAT3(0.0f, 5.5f, -7.5f);
+	double angle = atan2(particlePosition.x - m_pCamera->GetPosition().x, particlePosition.z - m_pCamera->GetPosition().z) * 180.0/XM_PI;
+	XMMATRIX particleTransformationMatrix = XMMatrixRotationRollPitchYaw(0.0f, (float)angle * XM_PI/180, 0.0f) ;
+	particleTransformationMatrix *= XMMatrixTranslation(particlePosition.x, particlePosition.y, particlePosition.z);
+	m_pParticleSystem->SetWorldMatrix(particleTransformationMatrix);
 	// Render particles
 	m_pParticleSystem->Render(m_pImmediateContext);
 	if (!m_pShaderManager->RenderParticles(m_pParticleSystem, m_pCamera))
