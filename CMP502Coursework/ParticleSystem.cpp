@@ -197,7 +197,7 @@ bool ParticleSystem::Update(float fFrameTime, ID3D11DeviceContext* immediateCont
 	// Copy the vertices into the vertex buffer
 	memcpy(vertexBufferData, m_vertices, sizeof(ParticleVertex) * m_iVertexCount);
 
-	// Unlock the matrix buffer
+	// Unlock the vertex buffer
 	immediateContext->Unmap(m_pVertexBuffer, 0);
 
 	return true;
