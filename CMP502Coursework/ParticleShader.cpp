@@ -2,6 +2,9 @@
 // ParticleShader.cpp
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Tutorial 39: Particle Systems (http://www.rastertek.com/dx11tut39.html)
+//
 
 #include "ParticleShader.h"
 

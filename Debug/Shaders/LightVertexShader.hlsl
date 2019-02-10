@@ -2,6 +2,9 @@
 // LightVertexShader.hlsl
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Tutorial 7: 3D Model Rendering (http://www.rastertek.com/dx11tut07.html)
+//
 
 // Constant buffer
 

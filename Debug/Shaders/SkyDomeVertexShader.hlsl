@@ -2,6 +2,9 @@
 // SkyDomeVertexShader.hlsl
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Terrain Tutorial 7: Sky Domes (http://www.rastertek.com/dx11ter07.html)
+//
 
 // Constant buffer
 

@@ -2,6 +2,9 @@
 // SkyPlaneVertexShader.hlsl
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Terrain Tutorial 11: Bitmap Clouds (http://www.rastertek.com/tertut11.html)
+//
 
 // Constant buffer
 
@@ -38,7 +41,7 @@ PS_INPUT VS(VS_INPUT input)
 	// Calculate the position of the vertex against the world, view, and projection matrices
 	output.position = mul(input.position, worldMatrix);
 	output.position = mul(output.position, viewMatrix);
-	output.position = mul(output.position, projectionMatrix);
+	output.position = mul(output.position, projectionMatrix).xyww;
 
 	// Store the texture coordinates for the pixel shader
 	output.texCoord = input.texCoord;

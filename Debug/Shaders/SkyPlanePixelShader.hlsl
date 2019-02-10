@@ -2,6 +2,9 @@
 // SkyPlanePixelShader.hlsl
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Terrain Tutorial 11: Bitmap Clouds (http://www.rastertek.com/tertut11.html)
+//
 
 Texture2D shaderTexture1;
 Texture2D shaderTexture2;
@@ -9,7 +12,7 @@ SamplerState samplerState;
 
 // Constant buffer
 
-cbuffer CloudsBuffer
+cbuffer CloudBuffer
 {
 	float texture1TranslationX;
 	float texture1TranslationZ;
@@ -51,7 +54,7 @@ float4 PS(PS_INPUT input) : SV_TARGET
 	float4 outputColor = lerp(textureColor1, textureColor2, 0.5f);
 
 	// Reduce the brightness of the combined cloud textures
-	outputColor = outputColor * brightness;
+	outputColor.xyz = outputColor.xyz * brightness;
 
 	return outputColor;
 }

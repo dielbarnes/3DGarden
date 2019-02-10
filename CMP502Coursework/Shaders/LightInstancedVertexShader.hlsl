@@ -2,6 +2,9 @@
 // LightInstancedVertexShader.hlsl
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Tutorial 37: Instancing (http://www.rastertek.com/dx11tut37.html)
+//
 
 // Constant buffer
 

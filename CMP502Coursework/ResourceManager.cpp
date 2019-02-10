@@ -472,6 +472,9 @@ HRESULT ResourceManager::LoadTexture(TextureResource resource)
 
 bool ResourceManager::LoadModel(ModelResource resource)
 {
+	// Reference:
+	// RasterTek Tutorial 8: Loading Maya 2011 Models (http://www.rastertek.com/dx11tut08.html)
+
 	// Create model
 	Model* model = nullptr;
 	if (resource == SkyDomeModel)

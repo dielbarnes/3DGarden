@@ -603,8 +603,8 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 	m_pParticleSystem->Update(fFrameTime, m_pImmediateContext);
 	// Billboarding
 	XMFLOAT3 particlePosition = XMFLOAT3(0.0f, 5.5f, -7.5f);
-	double angle = atan2(particlePosition.x - m_pCamera->GetPosition().x, particlePosition.z - m_pCamera->GetPosition().z) * 180.0/XM_PI;
-	XMMATRIX particleTransformationMatrix = XMMatrixRotationRollPitchYaw(0.0f, (float)angle * XM_PI/180, 0.0f) ;
+	double angle = atan2(particlePosition.x - m_pCamera->GetPosition().x, particlePosition.z - m_pCamera->GetPosition().z) * 180.0/XM_PI; // RasterTek Tutorial 34: Billboarding (http://www.rastertek.com/dx11tut34.html)
+	XMMATRIX particleTransformationMatrix = XMMatrixRotationRollPitchYaw(0.0f, (float)angle * XM_PI/180, 0.0f);
 	particleTransformationMatrix *= XMMatrixTranslation(particlePosition.x, particlePosition.y, particlePosition.z);
 	m_pParticleSystem->SetWorldMatrix(particleTransformationMatrix);
 	// Render particles

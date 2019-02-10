@@ -2,6 +2,9 @@
 // SkyPlanePixelShader.hlsl
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Terrain Tutorial 11: Bitmap Clouds (http://www.rastertek.com/tertut11.html)
+//
 
 Texture2D shaderTexture1;
 Texture2D shaderTexture2;

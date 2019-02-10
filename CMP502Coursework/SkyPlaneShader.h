@@ -2,6 +2,9 @@
 // SkyPlaneShader.h
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Terrain Tutorial 11: Bitmap Clouds (http://www.rastertek.com/tertut11.html)
+//
 
 #ifndef SKY_PLANE_SHADER_H
 #define SKY_PLANE_SHADER_H

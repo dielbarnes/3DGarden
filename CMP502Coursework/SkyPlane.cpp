@@ -2,6 +2,9 @@
 // SkyPlane.cpp
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
+// Reference:
+// RasterTek Terrain Tutorial 11: Bitmap Clouds (http://www.rastertek.com/tertut11.html)
+//
 
 #include "SkyPlane.h"
 
