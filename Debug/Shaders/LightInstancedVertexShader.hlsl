@@ -3,6 +3,7 @@
 // Copyright © 2018 Diel Barnes. All rights reserved.
 //
 // Reference:
+// Texturing and Lighting in DirectX 11 (https://www.3dgep.com/texturing-lighting-directx-11)
 // RasterTek Tutorial 37: Instancing (http://www.rastertek.com/dx11tut37.html)
 //
 
