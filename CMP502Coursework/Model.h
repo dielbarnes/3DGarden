@@ -4,6 +4,7 @@
 //
 // Reference:
 // RasterTek Tutorial 7: 3D Model Rendering (http://www.rastertek.com/dx11tut07.html)
+// RasterTek Tutorial 10: Specular Lighting (http://www.rastertek.com/dx11tut10.html)
 // Texturing and Lighting in DirectX 11 (https://www.3dgep.com/texturing-lighting-directx-11)
 // RasterTek Tutorial 37: Instancing (http://www.rastertek.com/dx11tut37.html)
 //
@@ -58,6 +59,8 @@ public:
 	XMFLOAT4 GetDiffuseColor();
 	void SetLightDirection(float x, float y, float z);
 	XMFLOAT3 GetLightDirection();
+	float GetSpecularPower();
+	XMFLOAT4 GetSpecularColor();
 
 protected:
 	ID3D11ShaderResourceView* m_pTexture;
@@ -72,6 +75,8 @@ protected:
 	XMFLOAT4 m_ambientColor;
 	XMFLOAT4 m_diffuseColor;
 	XMFLOAT3 m_lightDirection;
+	float m_fSpecularPower;
+	XMFLOAT4 m_specularColor;
 };
 
 #endif

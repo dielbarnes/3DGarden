@@ -90,7 +90,7 @@ HRESULT Shader::Initialize(LPCWSTR vertexShaderFilename, LPCSTR vertexShaderEntr
 
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.ByteWidth = sizeof(MatrixBuffer);
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;				// Resource is accessible by both the GPU (read only) and the CPU (write only); good choice for a resource that will be updated by the CPU at least once per frame
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	// Bind the buffer as a constant buffer to the input assembler stage
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	result = m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pMatrixBuffer);
@@ -146,9 +146,8 @@ HRESULT Shader::SetMatrixBuffer(XMMATRIX worldMatrix, Camera* pCamera)
 
 	// Update the matrix constant buffer
 
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-
 	// Lock the matrix buffer so it can be written to
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	result = m_pImmediateContext->Map(m_pMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{

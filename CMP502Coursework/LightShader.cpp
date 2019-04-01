@@ -4,6 +4,7 @@
 //
 // Reference:
 // RasterTek Tutorial 7: 3D Model Rendering (http://www.rastertek.com/dx11tut07.html)
+// RasterTek Tutorial 10: Specular Lighting (http://www.rastertek.com/dx11tut10.html)
 //
 
 #include "LightShader.h"
@@ -14,6 +15,7 @@ LightShader::LightShader(ID3D11Device &device, ID3D11DeviceContext &immediateCon
 {
 	m_pInstancedVertexShader = nullptr;
 	m_pInstancedVertexInputLayout = nullptr;
+	m_pCameraBuffer = nullptr;
 	m_pLightBuffer = nullptr;
 	m_pSamplerState = nullptr;
 }
@@ -22,6 +24,7 @@ LightShader::~LightShader()
 {
 	SAFE_RELEASE(m_pInstancedVertexShader)
 	SAFE_RELEASE(m_pInstancedVertexInputLayout)
+	SAFE_RELEASE(m_pCameraBuffer)
 	SAFE_RELEASE(m_pLightBuffer)
 	SAFE_RELEASE(m_pSamplerState)
 }
@@ -98,12 +101,21 @@ HRESULT LightShader::Initialize()
 		return result;
 	}
 
-	// Create the light constant buffer
+	// Create the camera constant buffer
 	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.ByteWidth = sizeof(LightBuffer);
+	bufferDesc.ByteWidth = sizeof(CameraBuffer);
 	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	result = m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pCameraBuffer);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to create camera buffer.", result);
+		return result;
+	}
+
+	// Create the light constant buffer
+	bufferDesc.ByteWidth = sizeof(LightBuffer);
 	result = m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pLightBuffer);
 	if (FAILED(result))
 	{
@@ -113,19 +125,19 @@ HRESULT LightShader::Initialize()
 
 	// Create the texture sampler state
 	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// Use linear interpolation for minification, magnification, and mip-level sampling
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;		// Tile the texture when resolving a u texture coordinate that is outside the 0 to 1 range
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; 
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MipLODBias = 0.0f;							// Offset from the calculated mipmap level
 	samplerDesc.MaxAnisotropy = 1;
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	samplerDesc.BorderColor[0] = 0;
 	samplerDesc.BorderColor[1] = 0;
 	samplerDesc.BorderColor[2] = 0;
 	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	samplerDesc.MinLOD = 0;									// Lower end of the mipmap range to clamp access to, where 0 is the largest and most detailed mipmap level and any level higher than that is less detailed
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;					// No upper limit on LOD
 	result = m_pDevice->CreateSamplerState(&samplerDesc, &m_pSamplerState);
 	if (FAILED(result))
 	{
@@ -160,6 +172,30 @@ bool LightShader::Render(Model* pModel, Camera* pCamera)
 	// Update and set the matrix constant buffer to be used by the vertex shader
 	Shader::SetMatrixBuffer(pModel->GetWorldMatrix(), pCamera);
 
+	// Update the camera constant buffer
+
+	// Lock the camera buffer so it can be written to
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	result = m_pImmediateContext->Map(m_pCameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		Utils::ShowError("Failed to map the camera buffer.", result);
+		return false;
+	}
+
+	// Get a pointer to the camera buffer data
+	CameraBuffer* cameraBufferData = (CameraBuffer*)mappedResource.pData;
+
+	// Copy the camera position into the camera buffer
+	cameraBufferData->cameraPosition = pCamera->GetPosition();
+	cameraBufferData->padding = 0.0f;
+
+	// Unlock the camera buffer
+	m_pImmediateContext->Unmap(m_pCameraBuffer, 0);
+
+	// Set the constant buffers to be used by the vertex shader
+	m_pImmediateContext->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+
 	// Set the vertex shader to the device
 	if (pModel->GetInstanceCount() == 1)
 	{
@@ -176,7 +212,6 @@ bool LightShader::Render(Model* pModel, Camera* pCamera)
 	// Update the light constant buffer
 
 	// Lock the light buffer so it can be written to
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	result = m_pImmediateContext->Map(m_pLightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
@@ -191,7 +226,8 @@ bool LightShader::Render(Model* pModel, Camera* pCamera)
 	lightBufferData->ambientColor = pModel->GetAmbientColor();
 	lightBufferData->diffuseColor = pModel->GetDiffuseColor();
 	lightBufferData->direction = pModel->GetLightDirection();
-	lightBufferData->padding = 0.0f;
+	lightBufferData->specularColor = pModel->GetSpecularColor();
+	lightBufferData->specularPower = pModel->GetSpecularPower();
 
 	// Unlock the light buffer
 	m_pImmediateContext->Unmap(m_pLightBuffer, 0);

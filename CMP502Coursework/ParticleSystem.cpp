@@ -61,7 +61,7 @@ bool ParticleSystem::Initialize(ID3D11Device* device)
 
 	D3D11_BUFFER_DESC bufferDesc = {}; // Describes the vertex buffer object to be created
 	bufferDesc.ByteWidth = sizeof(ParticleVertex) * m_iVertexCount;
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;							// Resource is accessible by both the GPU (read only) and the CPU (write only); a dynamic resource will be updated by the CPU at least once per frame
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;							// Resource is accessible by both the GPU (read only) and the CPU (write only); good choice for a resource that will be updated by the CPU at least once per frame
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;				// Bind the buffer as a vertex buffer to the input assembler stage
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;				// Resource is mappable so that the CPU can change its contents
 
@@ -284,7 +284,7 @@ void ParticleSystem::UpdateParticles(float fFrameTime)
 	// Move particles downwards each frame
 	for (int i = 0; i < m_iCurrentParticleCount; i++)
 	{
-		m_particles[i].y = m_particles[i].y - (m_particles[i].velocity * fFrameTime * 0.001f);
+		m_particles[i].y -= (m_particles[i].velocity * fFrameTime * 0.001f);
 	}
 }
 
@@ -298,7 +298,7 @@ void ParticleSystem::KillParticles()
 			m_particles[i].isActive = false;
 			m_iCurrentParticleCount--;
 
-			// Now shift all the live particles back up the array to erase the destroyed particle and keep the array sorted correctly
+			// Shift all the live particles back up the array to erase the destroyed particle and keep the array sorted correctly
 			for (int j = i; j < m_iMaxParticles - 1; j++)
 			{
 				m_particles[j].x = m_particles[j + 1].x;

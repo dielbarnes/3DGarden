@@ -4,6 +4,7 @@
 //
 // Reference:
 // RasterTek Tutorial 7: 3D Model Rendering (http://www.rastertek.com/dx11tut07.html)
+// RasterTek Tutorial 10: Specular Lighting (http://www.rastertek.com/dx11tut10.html)
 // Texturing and Lighting in DirectX 11 (https://www.3dgep.com/texturing-lighting-directx-11)
 // RasterTek Tutorial 37: Instancing (http://www.rastertek.com/dx11tut37.html)
 //
@@ -26,6 +27,8 @@ Model::Model()
 	//m_diffuseColor = COLOR_XMF4(255.0f, 255.0f, 255.0f, 1.0f);
 	m_diffuseColor = COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f); // Light pink
 	m_lightDirection = XMFLOAT3(0.0f, -0.8f, 0.5f);
+	m_fSpecularPower = 32.0f;
+	m_specularColor = COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f);
 }
 
 Model::~Model()
@@ -175,6 +178,16 @@ void Model::SetLightDirection(float x, float y, float z)
 XMFLOAT3 Model::GetLightDirection()
 {
 	return m_lightDirection;
+}
+
+float Model::GetSpecularPower()
+{
+	return m_fSpecularPower;
+}
+
+XMFLOAT4 Model::GetSpecularColor()
+{
+	return m_specularColor;
 }
 
 #pragma endregion

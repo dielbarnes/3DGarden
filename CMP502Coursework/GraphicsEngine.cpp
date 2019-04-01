@@ -57,7 +57,7 @@ bool GraphicsEngine::Initialize(int& iScreenWidth, int& iScreenHeight, HWND hWin
 	float fAspectRatio = iScreenWidth / (FLOAT)iScreenHeight;
 	m_pCamera = new Camera(position, fAspectRatio);
 
-	// Create device, swap chain, render target view, depth stencil state, depth stencil view, and rasterizer state
+	// Create device, swap chain, render target view, depth stencil states, depth stencil view, and rasterizer states
 	// Setup the viewport
 	// Create blend states
 	if (FAILED(InitDirect3D(iScreenWidth, iScreenHeight, hWindow)))
@@ -257,22 +257,22 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	// Create the depth stencil state
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
-	depthStencilDesc.DepthEnable = true;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	depthStencilDesc.StencilEnable = true;
-	depthStencilDesc.StencilReadMask = 0xFF;
-	depthStencilDesc.StencilWriteMask = 0xFF;
+	depthStencilDesc.DepthEnable = true;									// Enable depth testing
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// Identifies a portion of the depth-stencil buffer that can be modified by depth data (turn on writes to the depth-stencil buffer)
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;						// Compares depth data against existing depth data (if the source data is less than the destination data, the comparison passes)
+	depthStencilDesc.StencilEnable = true;									// Enable stencil testing
+	depthStencilDesc.StencilReadMask = 0xFF;								// Identifies a portion of the depth-stencil buffer for reading stencil data
+	depthStencilDesc.StencilWriteMask = 0xFF;								// Identifies a portion of the depth-stencil buffer for writing stencil data
 
-	// Stencil operations if pixel is front-facing
-	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	// Stencil operations if pixel is front-facing (identifies how to use the results of the depth test and the stencil test for pixels whose surface normal is facing towards the camera)
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// Performed when stencil testing fails (keep the existing stencil data)
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;	// Performed when stencil testing passes and depth testing fails (increment the stencil value by 1, and wrap the result if necessary)
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;		// Performed when stencil testing and depth testing both pass
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;		// Compares stencil data against existing stencil data (always pass the comparison) 
 
-	// Stencil operations if pixel is back-facing
+	// Stencil operations if pixel is back-facing (identifies how to use the results of the depth test and the stencil test for pixels whose surface normal is facing away from the camera)
 	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;	// Decrement the stencil value by 1, and wrap the result if necessary
 	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	
@@ -287,7 +287,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 	m_pImmediateContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
 
 	// Create a depth stencil state which turns off the Z buffer for 2D rendering
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// If the source data is less than or equal to the destination data, the comparison passes
 	result = m_pDevice->CreateDepthStencilState(&depthStencilDesc, &m_pDepthDisabledStencilState);
 	if (FAILED(result))
 	{
@@ -470,7 +470,7 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 	// Clear the depth buffer to 1.0 (max depth)
 	m_pImmediateContext->ClearDepthStencilView(
 							m_pDepthStencilView,
-							D3D11_CLEAR_DEPTH,	// Specifies the parts of the depth stencil to clear
+							D3D11_CLEAR_DEPTH,	// Specifies the parts of the depth stencil to clear (clear the depth buffer)
 							1.0f,				// Clear the depth buffer with this value
 							0);					// Clear the stencil buffer with this value
 
@@ -625,7 +625,7 @@ bool GraphicsEngine::Render(const float& fDeltaT, float fFrameTime)
 
 	// Present the back buffer to the front buffer
 	m_pSwapChain->Present(
-					0,	// Sync interval
+					0,	// Sync interval (the presentation occurs immediately, there is no synchronization)
 					0);	// Present a frame from each buffer starting with the current buffer to the output
 
 	return true;
