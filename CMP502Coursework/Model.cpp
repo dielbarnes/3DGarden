@@ -22,13 +22,11 @@ Model::Model()
 	m_pInstanceBuffer = nullptr;
 	m_iInstanceCount = 0;
 	m_worldMatrix = XMMatrixIdentity();
-	//m_ambientColor = COLOR_XMF4(38.0f, 38.0f, 38.0f, 1.0f);
-	m_ambientColor = COLOR_XMF4(64.0f, 64.0f, 64.0f, 1.0f);
-	//m_diffuseColor = COLOR_XMF4(255.0f, 255.0f, 255.0f, 1.0f);
+	m_ambientColor = COLOR_XMF4(51.0f, 51.0f, 51.0f, 1.0f);
 	m_diffuseColor = COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f); // Light pink
 	m_lightDirection = XMFLOAT3(0.0f, -0.8f, 0.5f);
-	m_fSpecularPower = 32.0f;
-	m_specularColor = COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f);
+	m_fSpecularPower = 24.0f;
+	m_specularColor = COLOR_XMF4(13.0f, 0.0f, 11.0f, 1.0f);
 }
 
 Model::~Model()

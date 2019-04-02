@@ -63,8 +63,8 @@ private:
 	ID3D11DeviceContext* m_pImmediateContext;
 	std::vector<ID3D11ShaderResourceView*> m_textures;
 	std::vector<Model*> m_models;
-	SkyDome *m_skyDome;
-	SkyPlane *m_skyPlane;
+	SkyDome *m_pSkyDome;
+	SkyPlane *m_pSkyPlane;
 
 	HRESULT LoadTexture(TextureResource resource);
 	bool LoadModel(ModelResource resource);

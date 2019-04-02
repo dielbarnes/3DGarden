@@ -23,8 +23,8 @@ ResourceManager::~ResourceManager()
 	{
 		SAFE_DELETE(model);
 	}
-	SAFE_DELETE(m_skyDome);
-	SAFE_DELETE(m_skyPlane);
+	SAFE_DELETE(m_pSkyDome);
+	SAFE_DELETE(m_pSkyPlane);
 }
 
 bool ResourceManager::LoadResources()
@@ -209,11 +209,11 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	m_skyDome->SetTopColor(COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f)); // Light pink
-	m_skyDome->SetCenterColor(COLOR_XMF4(200.0f, 180.0f, 180.0f, 1.0f)); // Light gray
-	m_skyDome->SetBottomColor(COLOR_XMF4(255.0f, 193.0f, 127.0f, 1.0f)); // Light orange
+	m_pSkyDome->SetTopColor(COLOR_XMF4(255.0f, 204.0f, 248.0f, 1.0f)); // Light pink
+	m_pSkyDome->SetCenterColor(COLOR_XMF4(200.0f, 180.0f, 180.0f, 1.0f)); // Light gray
+	m_pSkyDome->SetBottomColor(COLOR_XMF4(255.0f, 193.0f, 127.0f, 1.0f)); // Light orange
 
-	// Cloud (sky plane)
+	// Clouds (sky plane)
 
 	result = LoadTexture(TextureResource::CloudTexture1);
 	if (FAILED(result))
@@ -229,9 +229,9 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	m_skyPlane = new SkyPlane();
-	m_skyPlane->SetTexture1(*m_textures[TextureResource::CloudTexture1]);
-	m_skyPlane->SetTexture2(*m_textures[TextureResource::CloudTexture2]);
+	m_pSkyPlane = new SkyPlane();
+	m_pSkyPlane->SetTexture1(*m_textures[TextureResource::CloudTexture1]);
+	m_pSkyPlane->SetTexture2(*m_textures[TextureResource::CloudTexture2]);
 
 	// Initialize the vertex, index, and instance buffers
 
@@ -387,13 +387,13 @@ bool ResourceManager::LoadResources()
 		return false;
 	}
 
-	if (!m_skyDome->InitializeBuffers(m_pDevice))
+	if (!m_pSkyDome->InitializeBuffers(m_pDevice))
 	{
 		MessageBox(0, "Failed to initialize sky dome vertex and index buffers.", "", 0);
 		return false;
 	}
 
-	if (!m_skyPlane->Initialize(m_pDevice))
+	if (!m_pSkyPlane->Initialize(m_pDevice))
 	{
 		MessageBox(0, "Failed to initialize sky plane.", "", 0);
 		return false;
@@ -479,7 +479,7 @@ bool ResourceManager::LoadModel(ModelResource resource)
 	Model* model = nullptr;
 	if (resource == SkyDomeModel)
 	{
-		m_skyDome = new SkyDome();
+		m_pSkyDome = new SkyDome();
 	}
 	else
 	{
@@ -542,8 +542,8 @@ bool ResourceManager::LoadModel(ModelResource resource)
 	file >> iVertexCount;
 	if (resource == SkyDomeModel)
 	{
-		m_skyDome->SetVertexCount(iVertexCount);
-		m_skyDome->SetIndexCount(iVertexCount);
+		m_pSkyDome->SetVertexCount(iVertexCount);
+		m_pSkyDome->SetIndexCount(iVertexCount);
 	}
 	else
 	{
@@ -570,7 +570,7 @@ bool ResourceManager::LoadModel(ModelResource resource)
 	}
 	if (resource == SkyDomeModel)
 	{
-		m_skyDome->SetModelData(modelData);
+		m_pSkyDome->SetModelData(modelData);
 	}
 	else
 	{
@@ -605,12 +605,12 @@ Model* ResourceManager::GetModel(ModelResource resource)
 
 SkyDome* ResourceManager::GetSkyDome()
 {
-	return m_skyDome;
+	return m_pSkyDome;
 }
 
 SkyPlane* ResourceManager::GetSkyPlane()
 {
-	return m_skyPlane;
+	return m_pSkyPlane;
 }
 
 #pragma endregion
@@ -621,7 +621,7 @@ void ResourceManager::RenderModel(ModelResource resource)
 {
 	if (resource == SkyDomeModel)
 	{
-		m_skyDome->Render(m_pImmediateContext);
+		m_pSkyDome->Render(m_pImmediateContext);
 	}
 	else
 	{
@@ -631,7 +631,7 @@ void ResourceManager::RenderModel(ModelResource resource)
 
 void ResourceManager::RenderSkyPlane()
 {
-	m_skyPlane->Render(m_pImmediateContext);
+	m_pSkyPlane->Render(m_pImmediateContext);
 }
 
 #pragma endregion

@@ -53,7 +53,7 @@ float4 PS(PS_INPUT input) : SV_TARGET
 		float3 reflection = normalize(2 * lightIntensity * input.normal - lightDirection);
 
 		// Determine the amount of specular light
-		float specularIntensity = 0.0f; // Specular intensity of the material (http://ogldev.atspace.co.uk/www/tutorial19/tutorial19.html)
+		float specularIntensity = 1.0f; // Specular intensity of the material (http://ogldev.atspace.co.uk/www/tutorial19/tutorial19.html)
 		specular = specularColor * specularIntensity * pow(saturate(dot(reflection, input.viewDirection)), specularPower);
 	}
 
