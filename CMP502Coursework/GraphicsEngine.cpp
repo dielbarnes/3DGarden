@@ -195,7 +195,7 @@ HRESULT GraphicsEngine::InitDirect3D(int& iScreenWidth, int& iScreenHeight, HWND
 				nullptr,					// Software for D3D_DRIVER_TYPE_SOFTWARE
 				D3D11_CREATE_DEVICE_DEBUG,	// Runtime layer flags
 				featureLevels,
-				1,							// Number of feature levels
+				ARRAYSIZE(featureLevels),	// Number of feature levels
 				D3D11_SDK_VERSION,
 				&swapChainDesc,
 				&m_pSwapChain,
