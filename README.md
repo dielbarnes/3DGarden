@@ -4,9 +4,9 @@
 <img src="https://img.shields.io/badge/language-C%2B%2B-8800A7.svg"> <img src="https://img.shields.io/badge/DirectX-11-8800A7.svg">
 
 ### Features
-Instancing
-Ambient, diffuse, and specular lighting
-Particle system with billboarding
+Instancing  
+Ambient, diffuse, and specular lighting  
+Particle system with billboarding  
 Sky dome with moving clouds
 
 ### Resources
