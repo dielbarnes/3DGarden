@@ -7,7 +7,7 @@
 Instancing  
 Ambient, diffuse, and specular lighting  
 Particle system with billboarding  
-Sky dome with moving clouds
+Sky dome with moving clouds  
 Alpha blending
 
 ### Resources
