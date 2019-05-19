@@ -8,6 +8,7 @@ Instancing
 Ambient, diffuse, and specular lighting  
 Particle system with billboarding  
 Sky dome with moving clouds
+Alpha blending
 
 ### Resources
 Fountain model is from https://sketchfab.com/models/952a9c257db641229902c36abb97e8bc  
